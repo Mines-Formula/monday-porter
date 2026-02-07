@@ -1,4 +1,4 @@
-import mondaySdk from "@mondaydotcomorg/monday-sdk-js";
+import mondaySdk from "monday-sdk-js";
 
 const monday = mondaySdk();
 
