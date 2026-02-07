@@ -1,16 +1,17 @@
-// index.js
-const express = require("express");
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
-// Use the port provided by the environment or default to 8080
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "dist")));
+
 const PORT = process.env.PORT || 8080;
 
-// Basic route to verify it's running
-app.get("/", (req, res) => {
-  res.send("✅ Monday App is running successfully!");
-});
-
-// Start the server
 app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
