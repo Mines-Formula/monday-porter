@@ -47,9 +47,44 @@ export default function BudgetEntry() {
                 <HStack justify="space-between">
                     <HStack gap="2">
                         <DollarSign size={20} />
+                        <VStack align="start" gap="0">
+                            <Text fontWeight="600" textStyle="lg">
+                                Budget Entry
+                            </Text>
+                            <Text color="fg.muted" textStyle="sm">
+                                Set budget allocations per subsystem
+                            </Text>
+                        </VStack>
                     </HStack>
+
+                    <Badge colorPallette="blue" px="3" py="1">
+                        Total: ${totalBudget.toLocaleString()}
+                    </Badge>
                 </HStack>
             </Card.Header>
+
+            <Card.Body>
+                <Stack gap="4">
+                    {SUBSYSTEMS.map(subsystem => (
+                        <Field.Root key={subsystem}>
+                            <Field.Label>{subsystem}</Field.Label>
+                            <HStack>
+                                <Input type="number" min="0" step="100" placeholder="0" value={localBudgets[subsystem] ?? ""} onChange={e => handleChange(subssystem, e.target.value)} />
+                                <Text color="fg.muted" minW="16">
+                                    ${(localBudgets[subsystem] || 0).toLocalString()}
+                                </Text>
+                            </HStack>
+                        </Field.Root>
+                    ))}
+                </Stack>
+            </Card.Body>
+
+            <Card.Footer>
+                <Button colorPalette="blue" w="full" onClick={onOpen}>
+                    <Save size={16} />
+                    Save Budgets
+                </Button>
+            </Card.Footer>
         </Card.Root>
     )
 
