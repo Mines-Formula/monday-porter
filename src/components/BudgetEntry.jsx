@@ -85,7 +85,52 @@ export default function BudgetEntry() {
                     Save Budgets
                 </Button>
             </Card.Footer>
+
+            {/* Justiciation Dialog */}
+            <Dialog.Root open={open} onOpenChange={e => !e.open && onClose()}>
+                <Portal>
+                    <Dialog.Backdrop />
+                    <Dialog.Positioner>
+                        <Dialog.Content>
+                            <Dialog.Header>
+                                <Dialog.Title>
+                                    Budget Change Justification
+                                </Dialog.Title>
+                            </Dialog.Header>
+
+                            <Dialog.Body>
+                                <Field.Root>
+                                    <Field.Label>
+                                        Why are you changing the budget?
+                                    </Field.Label>
+                                    <Textarea placeholder="Enter justification for this budget change..." value={justification} onChange={e => setJustification(e.target.value)}
+                                    rows={4}
+                                    />
+                                    <Field.HelperText>
+                                        This will be recorded in the changelog.
+                                    </Field.HelperText>
+                                </Field.Root>
+                            </Dialog.Body>
+
+                            <Dialog.Footer gap="3">
+                                <Button variant="outline" onClick={onClose}>
+                                    Cancel
+                                </Button>
+                                <Button colorPalette="blue" onClick={handleConfirmSave} disabled={!justification.trim()} loading={saved}>
+                                    Confirm Save
+                                </Button>
+                            </Dialog.Footer>
+
+                            <Dialog.CloseTrigger asChild>
+                                <Button variant="ghost" size="sm" position="absolute" top="2" right="2">
+                                    <X size={16} />
+                                </Button>
+                            </Dialog.CloseTrigger>
+                        </Dialog.Content>
+                    </Dialog.Positioner>
+                </Portal>
+            </Dialog.Root>
         </Card.Root>
-    )
+    );
 
 }
