@@ -41,5 +41,16 @@ export default function BudgetEntry() {
 
     const totalBudget = Object.values(localBudgets).reduce((sum, val) => sum + (val || 0), 0);
 
-    
+    return (
+        <Card.Root>
+            <Card.Header>
+                <HStack justify="space-between">
+                    <HStack gap="2">
+                        <DollarSign size={20} />
+                    </HStack>
+                </HStack>
+            </Card.Header>
+        </Card.Root>
+    )
+
 }
