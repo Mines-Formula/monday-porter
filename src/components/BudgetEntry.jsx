@@ -33,7 +33,13 @@ export default function BudgetEntry() {
             setJustification("");
             onClose();
         } catch (err) {
-            console.error("Failed to save budget properly.");
+            console.error("Failed to save budget properly:", err);
+        } finally {
+            setSaving(false);
         }
-    }
+    };
+
+    const totalBudget = Object.values(localBudgets).reduce((sum, val) => sum + (val || 0), 0);
+
+    
 }
