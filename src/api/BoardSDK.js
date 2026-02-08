@@ -60,7 +60,14 @@ export default class OrderingQueueBoard {
     `;
 
     const res = await monday.api(query);
-    const items = res.data.boards[0].items;
+
+    if (!res || !res.data) {
+        console.error('Monday API returned no data', res);
+        return [];
+    }
+
+    return res.data.boards?.[0]?.items_page?.items ?? [];
+
 
     const resultMap = {};
 
