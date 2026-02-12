@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { OrderingQueueBoard } from '@api/BoardSDK.js';
-import { storage } from '@api/monday-storage';
+import { OrderingQueueBoard } from '@mondaydotcomorg/BoardSDK.js';
+import { storage } from '@mondaydotcomorg/monday-storage';
 
 const orderingQueueBoard = new OrderingQueueBoard();
 
