@@ -7,7 +7,7 @@ export default class OrderingQueueBoard {
   constructor(boardId) {
     // You can hardcode this if you want,
     // or pass it in from the hook
-    this.boardId = boardId || 9377407776; // 🔴 replace with real board ID
+    this.boardId = boardId || 9377407776;
   }
 
   aggregate() {
