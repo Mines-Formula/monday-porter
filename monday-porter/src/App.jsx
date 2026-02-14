@@ -1,9 +1,17 @@
-import './App.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
+import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const monday = window.mondaySdk();
+
+    monday.setToken(import.meta.env.VITE_API_TOKEN);
+    monday.api('query { account { id } }', {apiVersion: '2026-01'});
+    monday.api('query { boards { workspace { id name } id name }}').then(res => console.log(res));
+  }, []);
 
   return (
     <>
