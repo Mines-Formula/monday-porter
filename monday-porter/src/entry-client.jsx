@@ -1,14 +1,14 @@
 import './index.css'
-import { StrictMode } from 'react'
+import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
 import { hydrateRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 
 hydrateRoot(
   document.getElementById('root'),
-  <StrictMode>
+  <ChakraProvider value={defaultSystem}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </StrictMode>
+  </ChakraProvider>
 )

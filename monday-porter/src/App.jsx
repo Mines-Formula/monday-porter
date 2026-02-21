@@ -5,14 +5,6 @@ import Home from 'pages/Home.jsx'
 import SubsystemBudgets from 'pages/SubsystemBudgets.jsx'
 
 function App() {
-  useEffect(() => {
-    const monday = window.mondaySdk();
-
-    monday.setToken(import.meta.env.VITE_API_TOKEN);
-    monday.api('query { account { id } }', {apiVersion: '2026-01'});
-    monday.api('query { boards { workspace { id name } id name }}')
-      .then(res => console.log(res));
-  }, []);
 
   return (
     <>
