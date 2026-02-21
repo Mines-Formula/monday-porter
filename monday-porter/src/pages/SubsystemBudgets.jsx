@@ -30,14 +30,17 @@ function SubsystemBudgets() {
     if (loading) {
         return (
             <>
-            <h1 class="title">Subsystem Budgets</h1>
-            <p>Loading...</p>
+            <h1 class="title fixed">Subsystem Budgets</h1>
+            <main>
+                <p>Loading...</p>
+            </main>
             </>
         );
     } else {
         return (
             <>
-            <h1 class="title">Subsystem Budgets</h1>
+            <h1 class="title fixed">Subsystem Budgets</h1>
+            <main>
             <Stack gap="4">
                 <Accordion.Root>
                     {subsystems.map((subsystem, index) => (
@@ -59,6 +62,7 @@ function SubsystemBudgets() {
                     ))}
                 </Accordion.Root>
             </Stack>
+            </main>
             </>
         );
     }
