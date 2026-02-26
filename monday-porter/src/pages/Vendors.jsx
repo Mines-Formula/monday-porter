@@ -5,6 +5,13 @@ import { Table } from '@chakra-ui/react'
 function Vendors() {
     const [vendors, setVendors] = useState(vendorList);
 
+    function colorCode(preference) {
+        if (preference == "Preferred") return 'green';
+        if (preference == "Acceptable") return 'blue';
+        if (preference == "Nightmare") return 'red';
+        else return 'black';
+    }
+
     return (
         <>
         <h1 class="title">Approved Vendors</h1>
@@ -25,7 +32,7 @@ function Vendors() {
                     <Table.Row>
                         <Table.Cell>{vendor.name}</Table.Cell>
                         <Table.Cell>{vendor.spending}</Table.Cell>
-                        <Table.Cell>{vendor.preference}</Table.Cell>
+                        <Table.Cell style={{color: colorCode(vendor.preference)}}>{vendor.preference}</Table.Cell>
                         <Table.Cell>{vendor.notes}</Table.Cell>
                     </Table.Row>
                 ))}
