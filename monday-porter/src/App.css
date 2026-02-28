@@ -55,3 +55,11 @@ main {
 .table {
   margin-top: 20px;
 }
+
+.inputArea {
+  margin-bottom: 10px;
+}
+
+input, select {
+  border: 1px solid black;
+}

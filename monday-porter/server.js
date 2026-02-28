@@ -14,6 +14,8 @@ const templateHtml = isProduction
 // Create http server
 const app = express()
 
+app.use(express.json())
+
 // Add Vite or respective production middlewares
 /** @type {import('vite').ViteDevServer | undefined} */
 let vite
@@ -31,6 +33,24 @@ if (!isProduction) {
   app.use(compression())
   app.use(base, sirv('./dist/client', { extensions: [] }))
 }
+
+//API route to edit vendors.json
+app.post('/api/vendors', async (req, res) => {
+  try {
+    const filePath = './data/vendors.json'
+    const raw = await fs.readFile(filePath, 'utf-8')
+    const vendors = JSON.parse(raw)
+
+    vendors.push(req.body)
+
+    await fs.writeFile(filePath, JSON.stringify(vendors, null, 2))
+
+    res.json({ success: true })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Failed to save vendor' })
+  }
+})
 
 // Serve HTML
 app.use('*all', async (req, res) => {

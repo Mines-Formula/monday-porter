@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import vendorList from 'data/vendors.json'
 import { Table } from '@chakra-ui/react'
+import AddVendors from 'components/AddVendors.jsx'
 
 function Vendors() {
     const [vendors, setVendors] = useState(vendorList);
@@ -31,7 +32,7 @@ function Vendors() {
                 {vendors.map((vendor) =>(
                     <Table.Row>
                         <Table.Cell>{vendor.name}</Table.Cell>
-                        <Table.Cell>{vendor.spending}</Table.Cell>
+                        <Table.Cell>${vendor.spending}</Table.Cell>
                         <Table.Cell style={{color: colorCode(vendor.preference)}}>{vendor.preference}</Table.Cell>
                         <Table.Cell>{vendor.notes}</Table.Cell>
                     </Table.Row>
@@ -40,6 +41,7 @@ function Vendors() {
             </Table.Root>
         </Table.ScrollArea>
         </div>
+        <AddVendors vendors={vendors} setVendors={setVendors}></AddVendors>
         </>
     )
 }
