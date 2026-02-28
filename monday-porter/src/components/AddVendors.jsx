@@ -60,7 +60,7 @@ function AddVendors({vendors, setVendors}) {
                             <label for="name">Vendor Name: *</label> <input type="text" id="name" name="name"></input>
                         </div>
                         <div class="inputArea">
-                            <label for="spending">Spending: </label> <input type="number" id="spending" defaultValue="0.0" name="spending" min="0.0"></input>
+                            <label for="spending">Spending: </label> <input type="number" id="spending" defaultValue="0.00" name="spending" min="0.0"></input>
                         </div>
                         <div class="inputArea">
                             <label for="preference">Preference: *</label>
