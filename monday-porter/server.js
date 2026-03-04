@@ -52,6 +52,16 @@ app.post('/api/vendors', async (req, res) => {
   }
 })
 
+app.get('/api/vendors', async (req, res) => {
+  try {
+    const data = await fs.readFile('./data/vendors.json', 'utf-8')
+    res.json(JSON.parse(data))
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Failed to read vendors' })
+  }
+})
+
 // Serve HTML
 app.use('*all', async (req, res) => {
   try {

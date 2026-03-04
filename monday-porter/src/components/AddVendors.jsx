@@ -2,7 +2,7 @@ import { Button, CloseButton, Dialog, Portal } from "@chakra-ui/react"
 import 'src/App.css'
 
 function AddVendors({vendors, setVendors}) {
-    function handleSubmit(evt) {
+    async function handleSubmit(evt) {
         evt.preventDefault();
         const form = evt.target;
         const formData = new FormData(form);
@@ -27,15 +27,18 @@ function AddVendors({vendors, setVendors}) {
             spending: spendingInput,
             notes: notesInput
         }
-        console.log(vendors);
         let newVendors = [...vendors, vendor];
-        console.log(newVendors);
-        setVendors(newVendors);
-        fetch('/api/vendors', {
+        await fetch('/api/vendors', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(vendor)
+        }).then(res =>{
+            console.log("Sent the information");
         })
+        await fetch('/api/vendors').then(res => {
+            console.log(res.json());
+        });
+        setVendors(newVendors);
         alert("Successfuly added");
     }
 
