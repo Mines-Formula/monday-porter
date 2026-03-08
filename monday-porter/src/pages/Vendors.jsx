@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import vendorList from 'data/vendors.json'
 import { Table } from '@chakra-ui/react'
 import AddVendors from 'components/AddVendors.jsx'
@@ -12,6 +12,12 @@ function Vendors() {
         if (preference == "Nightmare") return 'red';
         else return 'black';
     }
+
+    useEffect(async () => {
+        const res = await fetch('/api/vendors');
+        const data = await res.json();
+        setVendors(data);
+    }, []);
 
     return (
         <>

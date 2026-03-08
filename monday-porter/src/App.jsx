@@ -17,6 +17,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/subsystemBudgets" element={<SubsystemBudgets />} />
         <Route path="/vendors" element={<Vendors/>} />
+        <Route path="/authorization"></Route>
+        <Route path="/oauth/callback"></Route>
       </Routes>
     </>
   )

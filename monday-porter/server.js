@@ -1,5 +1,7 @@
 import fs from 'node:fs/promises'
 import express from 'express'
+import { Storage, SecureStorage } from '@mondaycom/apps-sdk';
+import * as dotenv from 'dotenv';
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production'
@@ -13,8 +15,10 @@ const templateHtml = isProduction
 
 // Create http server
 const app = express()
-
+const router = express.Router();
 app.use(express.json())
+app.use(router);
+dotenv.config();
 
 // Add Vite or respective production middlewares
 /** @type {import('vite').ViteDevServer | undefined} */
@@ -34,33 +38,67 @@ if (!isProduction) {
   app.use(base, sirv('./dist/client', { extensions: [] }))
 }
 
-//API route to edit vendors.json
+//api to access storage
+// server.js
 app.post('/api/vendors', async (req, res) => {
   try {
-    const filePath = './data/vendors.json'
-    const raw = await fs.readFile(filePath, 'utf-8')
-    const vendors = JSON.parse(raw)
-
-    vendors.push(req.body)
-
-    await fs.writeFile(filePath, JSON.stringify(vendors, null, 2))
-
-    res.json({ success: true })
+    /*
+    const { userId, accountId, backToUrl } = jwt.verify(state, process.env.SIGNING_SECRET);
+    const secureStorage = new SecureStorage();
+    const token = await secureStorage.get(userId);*/
+    const storage = new Storage(process.env.VITE_API_TOKEN);
+    const { version, success, error } = await storage.set('vendors', JSON.stringify(req.body),{ shared: true });
+    res.json({ success, version }); 
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Failed to save vendor' })
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save vendor' });
   }
-})
+});
 
 app.get('/api/vendors', async (req, res) => {
   try {
-    const data = await fs.readFile('./data/vendors.json', 'utf-8')
-    res.json(JSON.parse(data))
+    const storage = new Storage(process.env.VITE_API_TOKEN);
+    const { value, version, success } = await storage.get('vendors', { shared: true } );
+    console.log(value);
+    console.log(typeof value);
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Failed to read vendors' })
+    console.error(err);
+    res.status(500).json({ err });
   }
-})
+});
+
+//routes for oauth flow
+router.get("/authorization", (req, res) => {
+  const { token } = req.query;
+
+  const params = new URLSearchParams({
+    client_id: process.env.CLIENT_ID,
+    state: token
+  });
+  console.log(process.env.CLIENT_ID);
+  console.log(params);
+
+  res.redirect(
+    `https://auth.monday.com/oauth2/authorize?${params}`
+  );
+});
+
+router.get("/oauth/callback", async (req, res) => {
+  const { code, state } = req.query;
+  const { userId, accountId, backToUrl } = jwt.verify(state, process.env.SIGNING_SECRET);
+
+  // Get access token
+  const token = await monday.oauthToken(code, process.env.CLIENT_ID, process.env.CLIENT_SECRET)
+  
+  // TODO - Store the token in a secure way in a way you'll can later on find it using the user ID. 
+  const secureStorage = new SecureStorage();
+  await secureStorage.set(userId, token);
+
+  // Redirect back to monday
+  return res.redirect(backToUrl);
+});
 
 // Serve HTML
 app.use('*all', async (req, res) => {

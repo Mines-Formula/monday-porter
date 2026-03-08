@@ -28,17 +28,19 @@ function AddVendors({vendors, setVendors}) {
             notes: notesInput
         }
         let newVendors = [...vendors, vendor];
-        await fetch('/api/vendors', {
+
+        const postRes = await fetch('/api/vendors', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(vendor)
-        }).then(res =>{
-            console.log("Sent the information");
-        })
-        await fetch('/api/vendors').then(res => {
-            console.log(res.json());
+            body: JSON.stringify(newVendors)
+        }).then(res => {
+            console.log(res);
         });
-        setVendors(newVendors);
+        console.log("Sent the information");
+        const res = await fetch('/api/vendors');
+        const data = await res.json();
+        console.log(data);
+        setVendors(data);
         alert("Successfuly added");
     }
 
