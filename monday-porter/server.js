@@ -45,12 +45,8 @@ if (!isProduction) {
 // server.js
 app.post('/api/vendors', async (req, res) => {
   try {
-    /*
-    const { userId, accountId, backToUrl } = jwt.verify(state, process.env.SIGNING_SECRET);
-    const secureStorage = new SecureStorage();
-    const token = await secureStorage.get(userId);*/
-    const storage = new Storage(process.env.VITE_API_TOKEN);
-    const { version, success, error } = await storage.set('vendors', JSON.stringify(req.body),{ shared: true });
+    const storage = new SecureStorage();
+    await storage.set('vendors', JSON.stringify(req.body),{ shared: true });
     res.json({ success, version }); 
   } catch (err) {
     console.error(err);
@@ -60,42 +56,14 @@ app.post('/api/vendors', async (req, res) => {
 
 app.get('/api/vendors', async (req, res) => {
   try {
-    const storage = new Storage(process.env.VITE_API_TOKEN);
-    const { value, version, success } = await storage.get('vendors', { shared: true } );
+    const storage = new SecureStorage();
+    const value = await storage.get('vendors');
     res.setHeader("Content-Type", "application/json");
     res.send(value);
   } catch (err) {
     console.error(err);
     res.status(500).json({ err });
   }
-});
-
-//routes for oauth flow
-router.get("/authorization", (req, res) => {
-  const { token } = req.query;
-  return res.redirect('https://auth.monday.com/oauth2/authorize?' +
-    querystring.stringify({
-      client_id: process.env.CLIENT_ID,
-      state: token
-    })
-  );
-});
-
-router.get("/oauth/callback", async (req, res) => {
-  const { code, state } = req.query;
-  const { userId, accountId, backToUrl } = jwt.verify(state, process.env.SIGNING_SECRET);
-
-  // Get access token - this part will work
-  const monday = mondaySdk();
-  monday.setApiVersion("2023-10");
-  const token = await monday.oauthToken(code, process.env.CLIENT_ID, process.env.CLIENT_SECRET)
-  console.log(token);
-  // TODO - Store the token in a secure way in a way you'll can later on find it using the user ID. 
-  //const secureStorage = new SecureStorage();
-  //await secureStorage.set(userId, token);
-
-  // Redirect back to monday
-  return res.redirect(backToUrl);
 });
 
 // Serve HTML
