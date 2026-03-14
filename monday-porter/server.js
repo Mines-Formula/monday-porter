@@ -88,6 +88,29 @@ app.get('/api/subsystemBudgets', async (req, res) => {
   }
 });
 
+app.post('/api/indexBalances', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    await storage.set('indexBalances', JSON.stringify(req.body),{ shared: true });
+    res.status(200).json({message: 'Successfuly saved subsystemBudgets'}); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save index balances' });
+  }
+});
+
+app.get('/api/indexBalances', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    const value = await storage.get('indexBalances');
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
 // Serve HTML
 app.use('*all', async (req, res) => {
   try {
