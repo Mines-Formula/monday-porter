@@ -13,10 +13,14 @@ function Vendors() {
         else return 'black';
     }
 
-    useEffect(async () => {
-        const res = await fetch('/api/vendors');
-        const data = await res.json();
-        setVendors(data);
+    useEffect(() => {
+        async function getData() {
+            const res = await fetch('/api/vendors');
+            const data = await res.json();
+            console.log("Setting vendors to data");
+            setVendors(data);
+        }
+        getData();
     }, []);
 
     return (

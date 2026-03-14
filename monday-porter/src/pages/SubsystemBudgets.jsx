@@ -1,71 +1,60 @@
 import { useState, useEffect } from 'react'
-import { Accordion, Span, Stack, Text } from '@chakra-ui/react'
+import { Table } from '@chakra-ui/react'
+import subsystemList from 'data/subsystemBudgets'
 
 function SubsystemBudgets() {
-    const [subsystems, setSubsystems] = useState(null);
-    const [colNames, setColNames] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [subsystems, setSubsystems] = useState(subsystemList);
 
     useEffect(() => {
-        const monday = window.mondaySdk();
-
-        monday.setToken(import.meta.env.VITE_API_TOKEN);
-        monday.api('query { account { id } }', {apiVersion: '2026-01'});
-        monday.api('query { boards(ids: 18401057070) { name columns { title id } items_page { items { id name column_values { text value __typename } } } } }')
-        .then(res => {
-            console.log(res);
-            setSubsystems(res.data.boards[0].items_page.items);
-            const cols = res.data.boards[0].columns;
-            const names = {};
-            for (let i = 1; i < cols.length; i++) {
-                //stores column name to index in subsystems
-                names[cols[i].title] = i-1;
-            }
-            setColNames(names);
-            setLoading(false);
-        });
+        async function getData() {
+            const res = await fetch('/api/subsystemBudgets');
+            const data = await res.json();
+            console.log("Setting subsystems to data");
+            setSubsystems(data);
+        }
+        getData();
     }, []);
 
-
-    if (loading) {
-        return (
-            <>
-            <h1 class="title fixed">Subsystem Budgets</h1>
-            <main>
-                <p>Loading...</p>
-            </main>
-            </>
-        );
-    } else {
-        return (
-            <>
-            <h1 class="title fixed">Subsystem Budgets</h1>
-            <main>
-            <Stack gap="4">
-                <Accordion.Root>
-                    {subsystems.map((subsystem, index) => (
-                    <Accordion.Item key={index} value={index}>
-                        <Accordion.ItemTrigger>
-                        <Span flex="1">{subsystem.name}</Span>
-                        <Accordion.ItemIndicator />
-                        </Accordion.ItemTrigger>
-                        <Accordion.ItemContent>
-                        <Accordion.ItemBody>
-                            <p>Allocated budget: ${subsystem.column_values[colNames["Budget"]].text}</p>
-                            <p>Amount of budget spent: ${subsystem.column_values[colNames["Spent"]].text}</p>
-                            <p>Amount of budget remaining: ${subsystem.column_values[colNames["Remaining"]].text}</p>
-                            <p>Percent of budget remaining: {subsystem.column_values[colNames["% Remaining"]].text}%</p>
-                            <p>Notes: {subsystem.column_values[colNames["Budget Notes"]].text}</p>
-                        </Accordion.ItemBody>
-                        </Accordion.ItemContent>
-                    </Accordion.Item>
-                    ))}
-                </Accordion.Root>
-            </Stack>
-            </main>
-            </>
-        );
+    function colorCode(percentRemaining) {
+        if (percentRemaining >= 66) return 'green';
+        if (percentRemaining >= 33) return 'orange';
+        else return 'red';
     }
+
+    return (
+            <>
+            <h1 class="title">SubsystemBudgets</h1>
+            <div class="table">
+            <Table.ScrollArea borderWidth="1px" rounded="md">
+                <Table.Root size="sm" stickyHeader striped>
+                    <Table.Header>
+                    <Table.Row bg="bg.subtle">
+                        <Table.ColumnHeader>Subsystem</Table.ColumnHeader>
+                        <Table.ColumnHeader>Budget</Table.ColumnHeader>
+                        <Table.ColumnHeader>Spent</Table.ColumnHeader>
+                        <Table.ColumnHeader>Remaining</Table.ColumnHeader>
+                        <Table.ColumnHeader>% Remaining</Table.ColumnHeader>
+                        <Table.ColumnHeader>Budget Notes</Table.ColumnHeader>
+                    </Table.Row>
+                    </Table.Header>
+    
+                    <Table.Body>
+                    {subsystems.map((subsystem) =>(
+                        <Table.Row>
+                            <Table.Cell>{subsystem.subsystem}</Table.Cell>
+                            <Table.Cell>${subsystem.budget}</Table.Cell>
+                            <Table.Cell>${subsystem.spent}</Table.Cell>
+                            <Table.Cell>${subsystem.remaining}</Table.Cell>
+                            <Table.Cell style={{color: colorCode(subsystem.percentRemaining)}}>{subsystem.percentRemaining}%</Table.Cell>
+                            <Table.Cell>{subsystem.budgetNotes}</Table.Cell>
+                        </Table.Row>
+                    ))}
+                    </Table.Body>
+                </Table.Root>
+            </Table.ScrollArea>
+            </div>
+            </>
+        )
 }
 
 export default SubsystemBudgets;

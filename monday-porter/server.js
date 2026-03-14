@@ -42,7 +42,6 @@ if (!isProduction) {
 }
 
 //api to access storage
-// server.js
 app.post('/api/vendors', async (req, res) => {
   try {
     const storage = new SecureStorage();
@@ -58,6 +57,29 @@ app.get('/api/vendors', async (req, res) => {
   try {
     const storage = new SecureStorage();
     const value = await storage.get('vendors');
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
+app.post('/api/subsystemBudgets', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    await storage.set('subsystemBudgets', JSON.stringify(req.body),{ shared: true });
+    res.status(200).json({message: 'Successfuly saved subsystemBudgets'}); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save subsystemBudgets' });
+  }
+});
+
+app.get('/api/subsystemBudgets', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    const value = await storage.get('subsystemBudgets');
     res.setHeader("Content-Type", "application/json");
     res.send(value);
   } catch (err) {
