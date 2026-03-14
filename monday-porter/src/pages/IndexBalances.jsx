@@ -4,6 +4,7 @@ import indexList from 'data/IndexBalances.json'
 
 function IndexBalances() {
     const [indexes, setIndexes] = useState(indexList);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         /*async function setData() {
@@ -21,6 +22,7 @@ function IndexBalances() {
             const data = await res.json();
             console.log("Setting indexes to data");
             setIndexes(data);
+            setLoading(false);
         }
         getData();
     }, []);
@@ -45,7 +47,17 @@ function IndexBalances() {
         return total;
     }
 
-    return (
+    if (loading) {
+        return (
+            <>
+            <h1 class="title">Index Balances</h1>
+            <div class="table">
+                <p>Loading index balances...</p>
+            </div>
+            </>
+        )
+    } else {
+        return (
             <>
             <h1 class="title">Index Balances</h1>
             <div class="table">
@@ -80,6 +92,7 @@ function IndexBalances() {
             </div>
             </>
         )
+    }
 }
 
 export default IndexBalances;

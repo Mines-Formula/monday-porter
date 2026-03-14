@@ -4,6 +4,7 @@ import subsystemList from 'data/subsystemBudgets.json'
 
 function SubsystemBudgets() {
     const [subsystems, setSubsystems] = useState(subsystemList);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function getData() {
@@ -11,6 +12,7 @@ function SubsystemBudgets() {
             const data = await res.json();
             console.log("Setting subsystems to data");
             setSubsystems(data);
+            setLoading(false);
         }
         getData();
     }, []);
@@ -21,7 +23,17 @@ function SubsystemBudgets() {
         else return 'red';
     }
 
-    return (
+    if (loading) {
+        return (
+            <>
+            <h1 class="title">Subsystem Budgets</h1>
+            <div class="table">
+                <p>Loading subsystem budgets...</p>
+            </div>
+            </>
+        )
+    } else {
+        return (
             <>
             <h1 class="title">Subsystem Budgets</h1>
             <div class="table">
@@ -55,6 +67,7 @@ function SubsystemBudgets() {
             </div>
             </>
         )
+    }
 }
 
 export default SubsystemBudgets;
