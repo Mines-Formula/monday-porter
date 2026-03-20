@@ -65,6 +65,29 @@ app.get('/api/vendors', async (req, res) => {
   }
 });
 
+app.post('/api/budgetChange', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    await storage.set('budgetChange', JSON.stringify(req.body),{ shared: true });
+    res.json({ success, version }); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save budgetChange' });
+  }
+});
+
+app.get('/api/budgetChange', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    const value = await storage.get('budgetChange');
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
 app.post('/api/subsystemBudgets', async (req, res) => {
   try {
     const storage = new SecureStorage();
