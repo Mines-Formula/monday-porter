@@ -115,7 +115,7 @@ app.post('/api/indexBalances', async (req, res) => {
   try {
     const storage = new SecureStorage();
     await storage.set('indexBalances', JSON.stringify(req.body),{ shared: true });
-    res.status(200).json({message: 'Successfuly saved subsystemBudgets'}); 
+    res.status(200).json({message: 'Successfuly saved index balances'}); 
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to save index balances' });
@@ -126,6 +126,29 @@ app.get('/api/indexBalances', async (req, res) => {
   try {
     const storage = new SecureStorage();
     const value = await storage.get('indexBalances');
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
+app.post('/api/revenueChanges', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    await storage.set('revenueChanges', JSON.stringify(req.body),{ shared: true });
+    res.status(200).json({message: 'Successfuly saved revenue changes'}); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save revenue changes' });
+  }
+});
+
+app.get('/api/revenueChanges', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    const value = await storage.get('revenueChanges');
     res.setHeader("Content-Type", "application/json");
     res.send(value);
   } catch (err) {
