@@ -1,5 +1,10 @@
 import fs from 'node:fs/promises'
 import express from 'express'
+import { Storage, SecureStorage } from '@mondaycom/apps-sdk';
+import * as dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+import querystring from 'querystring';
+import mondaySdk from "monday-sdk-js";
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production'
@@ -13,6 +18,10 @@ const templateHtml = isProduction
 
 // Create http server
 const app = express()
+const router = express.Router();
+app.use(express.json())
+app.use(router);
+dotenv.config();
 
 // Add Vite or respective production middlewares
 /** @type {import('vite').ViteDevServer | undefined} */
@@ -31,6 +40,99 @@ if (!isProduction) {
   app.use(compression())
   app.use(base, sirv('./dist/client', { extensions: [] }))
 }
+
+//api to access storage
+app.post('/api/vendors', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    await storage.set('vendors', JSON.stringify(req.body),{ shared: true });
+    res.json({ success, version }); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save vendor' });
+  }
+});
+
+app.get('/api/vendors', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    const value = await storage.get('vendors');
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
+app.post('/api/subsystemBudgets', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    await storage.set('subsystemBudgets', JSON.stringify(req.body),{ shared: true });
+    res.status(200).json({message: 'Successfuly saved subsystemBudgets'}); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save subsystemBudgets' });
+  }
+});
+
+app.get('/api/subsystemBudgets', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    const value = await storage.get('subsystemBudgets');
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
+app.post('/api/indexBalances', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    await storage.set('indexBalances', JSON.stringify(req.body),{ shared: true });
+    res.status(200).json({message: 'Successfuly saved index balances'}); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save index balances' });
+  }
+});
+
+app.get('/api/indexBalances', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    const value = await storage.get('indexBalances');
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
+app.post('/api/revenueChanges', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    await storage.set('revenueChanges', JSON.stringify(req.body),{ shared: true });
+    res.status(200).json({message: 'Successfuly saved revenue changes'}); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save revenue changes' });
+  }
+});
+
+app.get('/api/revenueChanges', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    const value = await storage.get('revenueChanges');
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
 
 // Serve HTML
 app.use('*all', async (req, res) => {
