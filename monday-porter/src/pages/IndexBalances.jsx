@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Table } from '@chakra-ui/react'
 import indexList from 'data/IndexBalances.json'
+import AddRevenueChange from 'components/AddRevenueChange.jsx'
 
 function IndexBalances() {
     const [indexes, setIndexes] = useState(indexList);
@@ -90,6 +91,7 @@ function IndexBalances() {
                 </Table.Root>
             </Table.ScrollArea>
             </div>
+            <AddRevenueChange indexes={indexes} setIndexes={setIndexes}></AddRevenueChange>
             </>
         )
     }

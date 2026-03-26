@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import revenueChangesList from 'data/RevenueChanges.json'
 import { Table } from '@chakra-ui/react'
-import AddRevenueChange from 'components/AddRevenueChange.jsx'
 
 function RevenueChanges() {
     const [revenue, setRevenue] = useState(revenueChangesList);
@@ -66,7 +65,6 @@ function RevenueChanges() {
                 </Table.Root>
             </Table.ScrollArea>
             </div>
-            <AddRevenueChange revenueChanges={revenue} setRevenueChanges={setRevenue}></AddRevenueChange>
             </>
         )
     }

@@ -1,23 +1,20 @@
 import { Button, CloseButton, Dialog, Portal } from "@chakra-ui/react"
 import 'src/App.css'
 
-function AddVendors({revenueChanges, setRevenueChanges}) {
+function AddRevenueChange({indexes, setIndexes}) {
     async function handleSubmit(evt) {
+        //manage data input
         evt.preventDefault();
         const form = evt.target;
         const formData = new FormData(form);
-        let dateInput = formData.get("date");
         let message = "";
-        if (dateInput == "") {
-            message += "Must enter in the date\n";
-        }
         let amountInput = formData.get("amount");
         if (amountInput == "0.00") {
-            message += "Must enter in the amount\n";
+            message += "Must enter in the amount added\n";
         }
         let indexInput = formData.get("index");
-        if (indexInput == "") {
-            message += "Must enter in the index\n";
+        if (indexInput == "select_preference") {
+            message += "Must select the index\n";
         }
         let descriptionInput = formData.get("description");
         if (descriptionInput == "") {
@@ -27,15 +24,20 @@ function AddVendors({revenueChanges, setRevenueChanges}) {
             alert(message);
             return;
         }
+
+        //get the date and update revenue changes
+        const d = new Date();
+        const dateInput = (d.getMonth() + 1) +"/" +(d.getDate()) + "/" + (d.getFullYear());
         const revenueChange = {
             date: dateInput,
             amount: amountInput,
             index: indexInput,
             description: descriptionInput
         }
+        const res = await fetch('/api/revenueChanges');
+        const revenueChanges = await res.json();
         let newRevenueChanges = [...revenueChanges, revenueChange];
-        
-        const postRes = await fetch('/api/revenueChanges', {
+        const revenuePostRes = await fetch('/api/revenueChanges', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newRevenueChanges)
@@ -43,19 +45,40 @@ function AddVendors({revenueChanges, setRevenueChanges}) {
             console.log(res);
         });
         console.log("Sent the information");
-        const res = await fetch('/api/revenueChanges');
-        const data = await res.json();
+
+        //update index balances
+        let newIndexes = indexes;
+        for (let i = 0; i < indexes.length; i++) {
+            let index = newIndexes[i];
+            if (index.index == indexInput) {
+                const oldRevenue = parseFloat(index.revenue.replace(/,/g, ''));
+                const oldBalance = parseFloat(index.balance.replace(/,/g, ''));
+                const newRevenue = oldRevenue + parseFloat(amountInput);
+                const newBalance = oldBalance + parseFloat(amountInput);
+                newIndexes[i].revenue = newRevenue.toLocaleString('en-US');
+                newIndexes[i].balance = newBalance.toLocaleString('en-US');
+            }
+        }
+        const indexPostRes = await fetch('/api/indexBalances', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newIndexes)
+        }).then(res => {
+            console.log(res);
+        });
+        const resIndex = await fetch('/api/indexBalances');
+        const data = await resIndex.json();
         console.log(data);
-        setRevenueChanges(data);
+        setIndexes(data);
         
-        alert("Successfuly added");
+        alert("Successfuly changed");
     }
 
     return (
         <Dialog.Root class="dialog">
         <Dialog.Trigger asChild>
             <Button variant="outline" size="sm">
-            Add Revenue Change
+            Change Revenue
             </Button>
         </Dialog.Trigger>
         <Portal>
@@ -63,19 +86,21 @@ function AddVendors({revenueChanges, setRevenueChanges}) {
             <Dialog.Positioner>
             <Dialog.Content>
                 <Dialog.Header>
-                <Dialog.Title>Add Revenue Change</Dialog.Title>
+                <Dialog.Title>Change Revenue</Dialog.Title>
                 </Dialog.Header>
                 <Dialog.Body>
                     <p>Required fields marked with *</p>
                     <form id="addRevenueChange" onSubmit={handleSubmit}>
                         <div class="inputArea">
-                            <label for="date">Date: *</label> <input type="date" id="date" name="date"></input>
+                            <label for="amount">Amount added: *</label> <input type="number" id="amount" step=".01" defaultValue="0.00" name="amount" min="0.00"></input>
                         </div>
                         <div class="inputArea">
-                            <label for="amount">Amount: *</label> <input type="number" id="amount" defaultValue="0.00" name="amount" min="0.00"></input>
-                        </div>
-                        <div class="inputArea">
-                            <label for="index">Index: *</label> <input type="number" id="index" name="index"></input>
+                            <label for="index">Index: *</label>
+                            <select id="index" name="index">
+                                <option value="select_preference">Select Index</option>
+                                <option value="383306">383306 - SAIL</option>
+                                <option value="610824">610824 - Foundation</option>
+                            </select>
                         </div>
                         <div class="inputArea">
                             <label for="description">Description: *</label> <input type="text" id="description" name="description"></input>
@@ -98,4 +123,4 @@ function AddVendors({revenueChanges, setRevenueChanges}) {
     )
 }
 
-export default AddVendors;
+export default AddRevenueChange;
