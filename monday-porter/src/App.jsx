@@ -19,7 +19,7 @@ function App() {
         <Link to="/orderingQueue">Ordering Queue</Link> | {" "}
         <Link to="/spending">Spending</Link> | {" "}
         <Link to="/teamBudget">Team Budget</Link> | {" "}
-        <Link to="/budgetChange">Budget Change</Link>
+        <Link to="/budgetChange">Budget Change</Link> | {" "}
         <Link to="/vendors">Approved Vendors</Link> | {" "}
         <Link to="/indexBalances">Index Balances</Link> | {" "}
         <Link to="/revenueEvents">Revenue Events</Link>
