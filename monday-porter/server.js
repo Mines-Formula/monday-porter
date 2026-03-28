@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import express from 'express'
-import { Storage, SecureStorage, EnvironmentVariablesManager } from '@mondaycom/apps-sdk';
+import { SecureStorage, EnvironmentVariablesManager, SecretsManager } from '@mondaycom/apps-sdk';
 import * as dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import querystring from 'querystring';
@@ -160,11 +160,12 @@ app.get('/api/revenueChanges', async (req, res) => {
   }
 });
 
+//api to get information from the ordering queue
 app.get('/api/orderingQueue', async (req, res) => {
   try {
-    console.log(process.env.VITE_API_TOKEN);
-    const envManager = new EnvironmentVariablesManager();
-    const client = new ApiClient({ token: envManager.get("VITE_API_TOKEN") });
+    const secureStorage = new SecureStorage();
+    const apiToken = await secureStorage.get("API_TOKEN");
+    const client = new ApiClient({ token: apiToken });
     const response = await client.request(`query { boards(ids: 9377407776) { name columns { title id } items_page( limit: 500 query_params: {order_by: [{column_id: "__creation_log__", direction: desc}]} ) { cursor items { id name column_values { text value __typename } } } } }`);
     res.setHeader("Content-Type", "application/json");
     res.send(response);
@@ -172,6 +173,34 @@ app.get('/api/orderingQueue', async (req, res) => {
     console.log(err);
     res.status(500).json({ err });
   }
+});
+
+//routes for oauth flow
+router.get("/authorization", (req, res) => {
+  const { token } = req.query;
+  const envManager = new EnvironmentVariablesManager();
+  return res.redirect('https://auth.monday.com/oauth2/authorize?' +
+    querystring.stringify({
+      client_id: envManager.get("CLIENT_ID"),
+      state: token
+    })
+  );
+});
+
+router.get("/oauth/callback", async (req, res) => {
+  const { code, state } = req.query;
+  const envManager = new EnvironmentVariablesManager();
+
+  // Get access token
+  const monday = mondaySdk();
+  monday.setApiVersion("2023-10");
+  const token = await monday.oauthToken(code, envManager.get("CLIENT_ID"), envManager.get("CLIENT_SECRET"))
+  //Store the token in a secure way
+  const secureStorage = new SecureStorage();
+  await secureStorage.set("API_TOKEN", token.access_token);
+
+  // Redirect back to monday
+  return res.send("You may return to the main page now and reload it.");
 });
 
 // Serve HTML
