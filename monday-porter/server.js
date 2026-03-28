@@ -1,10 +1,13 @@
 import fs from 'node:fs/promises'
 import express from 'express'
-import { Storage, SecureStorage } from '@mondaycom/apps-sdk';
+import { Storage, SecureStorage, EnvironmentVariablesManager } from '@mondaycom/apps-sdk';
 import * as dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import querystring from 'querystring';
 import mondaySdk from "monday-sdk-js";
+import {
+ ApiClient
+} from "@mondaydotcomorg/api";
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production'
@@ -153,6 +156,20 @@ app.get('/api/revenueChanges', async (req, res) => {
     res.send(value);
   } catch (err) {
     console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
+app.get('/api/orderingQueue', async (req, res) => {
+  try {
+    console.log(process.env.VITE_API_TOKEN);
+    const envManager = new EnvironmentVariablesManager();
+    const client = new ApiClient({ token: envManager.get("VITE_API_TOKEN") });
+    const response = await client.request(`query { boards(ids: 9377407776) { name columns { title id } items_page( limit: 500 query_params: {order_by: [{column_id: "__creation_log__", direction: desc}]} ) { cursor items { id name column_values { text value __typename } } } } }`);
+    res.setHeader("Content-Type", "application/json");
+    res.send(response);
+  } catch (err) {
+    console.log(err);
     res.status(500).json({ err });
   }
 });
