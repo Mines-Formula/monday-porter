@@ -1,7 +1,5 @@
 import { useEffect } from 'react'
-import {
- SeamlessApiClient, ApiClient
-} from "@mondaydotcomorg/api";
+import { Link } from 'react-router-dom'
 
 function Home() {
     useEffect(() => {
@@ -17,7 +15,7 @@ function Home() {
         <>
             <h1 text-align="center">Home</h1>
             <main>
-                <p>There is nothing here, go to another page</p>
+                <Link to="/authorization" target="_blank">Authorize</Link>
             </main>
         </>
     )

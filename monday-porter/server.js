@@ -177,12 +177,11 @@ app.get('/api/orderingQueue', async (req, res) => {
 
 //routes for oauth flow
 router.get("/authorization", (req, res) => {
-  const { token } = req.query;
   const envManager = new EnvironmentVariablesManager();
   return res.redirect('https://auth.monday.com/oauth2/authorize?' +
     querystring.stringify({
       client_id: envManager.get("CLIENT_ID"),
-      state: token
+      state: ""
     })
   );
 });
@@ -194,7 +193,7 @@ router.get("/oauth/callback", async (req, res) => {
   // Get access token
   const monday = mondaySdk();
   monday.setApiVersion("2023-10");
-  const token = await monday.oauthToken(code, envManager.get("CLIENT_ID"), envManager.get("CLIENT_SECRET"))
+  const token = await monday.oauthToken(code, envManager.get("CLIENT_ID"), envManager.get("CLIENT_SECRET"));
   //Store the token in a secure way
   const secureStorage = new SecureStorage();
   await secureStorage.set("API_TOKEN", token.access_token);
