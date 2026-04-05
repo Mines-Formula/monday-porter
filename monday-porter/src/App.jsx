@@ -16,7 +16,6 @@ function App() {
       <nav class="fixed">
         <Link to="/">Home</Link> | {" "}
         <Link to="/subsystemBudgets">Subsystem Budgets</Link> | {" "}
-        <Link to="/orderingQueue">Ordering Queue</Link> | {" "}
         <Link to="/spending">Spending</Link> | {" "}
         <Link to="/teamBudget">Team Budget</Link> | {" "}
         <Link to="/budgetChange">Budget Change</Link> | {" "}
@@ -28,7 +27,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/subsystemBudgets" element={<SubsystemBudgets />} />
-        <Route path="/orderingQueue" element={<OrderingQueue/>} />
         <Route path="/spending" element={<Spending/>} />
         <Route path="/teamBudget" element={<TeamBudget/>} />
         <Route path="/budgetChange" element={<BudgetChange/>} />

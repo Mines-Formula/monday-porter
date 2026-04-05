@@ -169,7 +169,7 @@ app.get('/api/orderingQueue', async (req, res) => {
     const apiToken = await secureStorage.get("API_TOKEN");
     //const apiToken = envManager.get("VITE_API_TOKEN");
     const client = new ApiClient({ token: apiToken });
-    //await secureStorage.set("lastID", "na");
+    await secureStorage.set("lastID", "na");
 
     const lastID = await secureStorage.get("lastID");
     console.log("lastID = " + lastID);
