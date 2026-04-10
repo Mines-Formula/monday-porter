@@ -15,7 +15,7 @@ function UpdateFromOrderingQueue() {
         for (let i = 0; i < columns.length; i++) {
             if (columns[i].title == "Subsystem") {
                 subsystemIdx = i-1;
-            } else if (columns[i].title == "Lead") {
+            } else if (columns[i].title == "Requester") {
                 leadIdx = i-1;
             } else if (columns[i].title == "Quantity") {
                 quantityIdx = i-1;
@@ -55,6 +55,19 @@ function UpdateFromOrderingQueue() {
                 spenders[i].spending = "0.00";
             }
             //team budget
+            for (let i = 0; i < teamBudget.length; i++) {
+                if (teamBudget[i].section_name == "Spending") {
+                    for (let j = 0; j < teamBudget[i].items.length; j++) {
+                        if (teamBudget[i].items[j].name == "Discretionary Unspent") {
+                            teamBudget[i].items[j].value = 0;
+                        } else if (teamBudget[i].items[j].name == "Total spent") {
+                            teamBudget[i].items[j].value = 0;
+                        } else if (teamBudget[i].items[j].name == "Total Unspent") {
+                            teamBudget[i].items[j].value = 0;
+                        }
+                   }
+                }
+            }
             //index balances
             for (let i = 0; i < indexBalances.length; i++) {
                 indexBalances[i].spent = "0.00";
@@ -114,7 +127,19 @@ function UpdateFromOrderingQueue() {
                 }
             }
             //deal with team budget
-
+            for (let i = 0; i < teamBudget.length; i++) {
+                if (teamBudget[i].section_name == "Spending") {
+                    for (let j = 0; j < teamBudget[i].items.length; j++) {
+                        if (teamBudget[i].items[j].name == "Discretionary Unspent") {
+                            teamBudget[i].items[j].value -= cost;
+                        } else if (teamBudget[i].items[j].name == "Total spent") {
+                            teamBudget[i].items[j].value += cost;
+                        } else if (teamBudget[i].items[j].name == "Total Unspent") {
+                            teamBudget[i].items[j].value -= cost;
+                        }
+                   }
+                }
+            }
         }
         //set everything
         //subsystem budgets
@@ -130,6 +155,11 @@ function UpdateFromOrderingQueue() {
             body: JSON.stringify(spenders)
         });
         //team budget
+        postRes = await fetch('/api/teamBudget', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(teamBudget)
+        });
         //index balances
         postRes = await fetch('/api/indexBalances', {
             method: 'POST',
