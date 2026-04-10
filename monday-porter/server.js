@@ -160,6 +160,52 @@ app.get('/api/revenueChanges', async (req, res) => {
   }
 });
 
+app.post('/api/spending', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    await storage.set('spending', JSON.stringify(req.body),{ shared: true });
+    res.status(200).json({message: 'Successfuly saved spending changes'}); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save spending changes' });
+  }
+});
+
+app.get('/api/spending', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    const value = await storage.get('spending');
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
+app.post('/api/teamBudget', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    await storage.set('teamBudget', JSON.stringify(req.body),{ shared: true });
+    res.status(200).json({message: 'Successfuly saved team budget changes'}); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save team budget changes' });
+  }
+});
+
+app.get('/api/teamBudget', async (req, res) => {
+  try {
+    const storage = new SecureStorage();
+    const value = await storage.get('teamBudget');
+    res.setHeader("Content-Type", "application/json");
+    res.send(value);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
 //api to get information from the ordering queue
 app.get('/api/orderingQueue', async (req, res) => {
   try {
