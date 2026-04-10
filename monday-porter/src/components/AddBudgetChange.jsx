@@ -1,6 +1,7 @@
 import { Button, CloseButton, Dialog, Portal } from "@chakra-ui/react"
 import 'src/App.css'
 
+
 function AddBudgetChange({budgetChange, setBudgetChange}) {
     async function handleSubmit(evt) {
         evt.preventDefault();
@@ -52,6 +53,33 @@ function AddBudgetChange({budgetChange, setBudgetChange}) {
         const data = await res.json();
         console.log(data);
         setBudgetChange(data);
+        
+        if (bc.category == "Reserves") { 
+            const tBRes = await fetch('/api/teamBudget');
+            const tBData = await tBRes.json();
+
+            for (let i=0;  i<tBData.length; i++) {
+                console.log(tBData[i]);
+                for (let j=0; j<tBData[i].items.length; j++) {
+                    console.log(tBData[i].items.name);
+                    if (tBData[i].items[j].name == "Reserves Budget") {
+                        console.log("Found reserve budget");
+                        tBData[i].items[j].value = parseInt(bc.afterAllocation);
+                    }
+                }
+            }
+
+            postRes = await fetch('/api/teamBudget', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(tBData)
+            })
+            let abd = await fetch('/api/teamBudget');
+            let data = await abd.json();
+            console.log("What is stored:");
+            console.log(data);
+        }
+
         alert("Successfuly added");
     }
 
