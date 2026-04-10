@@ -13,4 +13,7 @@ export default defineConfig({
       data: path.resolve(__dirname, 'data'),
     },
   },
+  define: {
+    'process.env': {},
+  }
 })
