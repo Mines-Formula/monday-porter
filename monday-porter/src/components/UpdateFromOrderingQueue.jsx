@@ -31,7 +31,11 @@ function UpdateFromOrderingQueue() {
         res = await fetch('/api/subsystemBudgets');
         let subsystemBudgets = await res.json();
         //spenders
+        res = await fetch('/api/spenders');
+        let spenders = await res.json();
         //team budget
+        res = await fetch('/api/teamBudget');
+        let teamBudget = await res.json();
         //index balances
         res = await fetch('/api/indexBalances');
         let indexBalances = await res.json();
@@ -47,6 +51,9 @@ function UpdateFromOrderingQueue() {
                 subsystemBudgets[i].percentRemaining = "100";
             }
             //spenders
+            for (let i = 0; i < spenders.length; i++) {
+                spenders[i].spending = "0.00";
+            }
             //team budget
             //index balances
             for (let i = 0; i < indexBalances.length; i++) {
@@ -98,7 +105,14 @@ function UpdateFromOrderingQueue() {
                 }
             }
             //deal with spenders
-
+            let spender = orders[i].column_values[leadIdx].text;
+            for (let j = 0; j < spenders.length; j++) {
+                if (spenders[j].name == spender) {
+                    spenders[j].spending = parseFloat(spenders[j].spending.replace(/,/g, '')) + cost;
+                    spenders[j].spending = spending[j].spending.toLocaleString('en-US');
+                    break;
+                }
+            }
             //deal with team budget
 
         }
@@ -107,9 +121,14 @@ function UpdateFromOrderingQueue() {
         let postRes = await fetch('/api/subsystemBudgets', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(subsystemList)
+            body: JSON.stringify(subsystemBudgets)
         });
         //spenders
+        postRes = postRes = await fetch('/api/spenders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(spenders)
+        });
         //team budget
         //index balances
         postRes = await fetch('/api/indexBalances', {
@@ -118,10 +137,10 @@ function UpdateFromOrderingQueue() {
             body: JSON.stringify(indexList)
         });
         //vendors
-        postRes = await fetch('/api/subsystemBudgets', {
+        postRes = await fetch('/api/vendors', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(subsystemList)
+            body: JSON.stringify(vendors)
         });
     }
 
