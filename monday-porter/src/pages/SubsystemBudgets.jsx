@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Table } from '@chakra-ui/react'
 import subsystemList from 'data/subsystemBudgets.json'
+import ChangeSubsystemBudgets from '../components/ChangeSubsystemBudgets';
 
 function SubsystemBudgets() {
     const [subsystems, setSubsystems] = useState(subsystemList);
@@ -75,6 +76,7 @@ function SubsystemBudgets() {
                 </Table.Root>
             </Table.ScrollArea>
             </div>
+            <ChangeSubsystemBudgets subsystemBudgetsInput={subsystems} setSubsystemBudgets={setSubsystems}></ChangeSubsystemBudgets>
             </>
         )
     }
