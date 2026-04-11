@@ -6,19 +6,41 @@ import AddBudgetChange from 'components/AddBudgetChange.jsx'
 
 function BudgetChange() {
     const [budgetChange, setBudgetChange] = useState(budgetChangeList);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        /*async function setData() {
+            const postRes = await fetch('/api/budgetChange', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(budgetChangeList)
+            }).then(res => {
+                console.log(res);
+            });
+        }
+        setData();*/
         async function getData() {
             const res = await fetch('/api/budgetChange');
             const data = await res.json();
             console.log("Setting budgetChange to data");
             setBudgetChange(data);
+            setLoading(false);
         }
         getData();
     }, []);
 
     console.log(budgetChange);
 
+    if (loading) {
+        return (
+            <>
+            <h1 class="title">Budget Change</h1>
+            <div class="table">
+                <p>Loading budget change...</p>
+            </div>
+            </>
+        )
+    }
     return (
         <>
         <h1 class="title fixed">Budget Change</h1>

@@ -31,20 +31,18 @@ function IndexBalances() {
     function totalBalance() {
         let total = 0;
         for (const index of indexes) {
-            let balance = parseFloat(index.balance.replace(/,/g, ''));
+            let balance = index.balance;
             total += balance;
         }
-        total = total.toLocaleString('en-US')
         return total;
     }
 
     function totalRevenue() {
         let total = 0;
         for (const index of indexes) {
-            let revenue = parseFloat(index.balance.replace(/,/g, ''));
+            let revenue = index.balance;
             total += revenue;
         }
-        total = total.toLocaleString('en-US')
         return total;
     }
 
@@ -82,9 +80,9 @@ function IndexBalances() {
                         <Table.Row>
                             <Table.Cell>{index.index}</Table.Cell>
                             <Table.Cell>{index.name}</Table.Cell>
-                            <Table.Cell>${index.revenue}</Table.Cell>
-                            <Table.Cell>${index.spent}</Table.Cell>
-                            <Table.Cell>${index.balance}</Table.Cell>
+                            <Table.Cell>${index.revenue.toLocaleString('en-US')}</Table.Cell>
+                            <Table.Cell>${index.spent.toLocaleString('en-US')}</Table.Cell>
+                            <Table.Cell>${index.balance.toLocaleString('en-US')}</Table.Cell>
                         </Table.Row>
                     ))}
                     </Table.Body>

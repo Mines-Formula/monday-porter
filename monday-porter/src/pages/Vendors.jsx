@@ -16,10 +16,10 @@ function Vendors() {
 
     useEffect(() => {
         /*async function setData() {
-            const postRes = await fetch('/api/subsystemBudgets', {
+            const postRes = await fetch('/api/vendors', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(subsystemList)
+                body: JSON.stringify(vendorList)
             }).then(res => {
                 console.log(res);
             });
