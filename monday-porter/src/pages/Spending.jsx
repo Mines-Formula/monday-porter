@@ -21,7 +21,6 @@ function Spending() {
         async function getData() {
             const res = await fetch('/api/spending');
             const data = await res.json();
-            console.log("Setting spenders to data");
             setSpenders(data);
             setLoading(false);
         }

@@ -49,7 +49,7 @@ app.post('/api/vendors', async (req, res) => {
   try {
     const storage = new SecureStorage();
     await storage.set('vendors', JSON.stringify(req.body),{ shared: true });
-    res.json({ success, version }); 
+    res.status(200).json({message: 'Successfuly saved vendors'});
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to save vendor' });
