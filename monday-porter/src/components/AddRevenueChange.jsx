@@ -51,12 +51,12 @@ function AddRevenueChange({indexes, setIndexes}) {
         for (let i = 0; i < indexes.length; i++) {
             let index = newIndexes[i];
             if (index.index == indexInput) {
-                const oldRevenue = parseFloat(index.revenue.replace(/,/g, ''));
-                const oldBalance = parseFloat(index.balance.replace(/,/g, ''));
+                const oldRevenue = index.revenue;
+                const oldBalance = index.balance;
                 const newRevenue = oldRevenue + parseFloat(amountInput);
                 const newBalance = oldBalance + parseFloat(amountInput);
-                newIndexes[i].revenue = newRevenue.toLocaleString('en-US');
-                newIndexes[i].balance = newBalance.toLocaleString('en-US');
+                newIndexes[i].revenue = newRevenue;
+                newIndexes[i].balance = newBalance;
             }
         }
         const indexPostRes = await fetch('/api/indexBalances', {
