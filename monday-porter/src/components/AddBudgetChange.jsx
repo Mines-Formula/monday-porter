@@ -40,7 +40,7 @@ function AddBudgetChange({budgetChange, setBudgetChange}) {
         }
         let newBudgetChange = [...budgetChange, bc];
 
-        const postRes = await fetch('/api/budgetChange', {
+        let postRes = await fetch('/api/budgetChange', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newBudgetChange)

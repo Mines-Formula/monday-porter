@@ -291,6 +291,23 @@ app.get('/api/orderingQueue', async (req, res) => {
   }
 });
 
+app.get('/api/userID', async (req, res) => {
+  try {
+    let userID = -1;
+    const secureStorage = new SecureStorage();
+    const envManager = new EnvironmentVariablesManager();
+    const apiToken = await secureStorage.get("API_TOKEN");
+    //const apiToken = envManager.get("VITE_API_TOKEN");
+    const client = new ApiClient({ token: apiToken });
+    const { me } = await client.operations.getMeOp();
+    res.setHeader("Content-Type", "application/json");
+    res.send(me);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ err })
+  }
+});
+
 //routes for oauth flow
 router.get("/authorization", (req, res) => {
   const envManager = new EnvironmentVariablesManager();
@@ -306,16 +323,20 @@ router.get("/oauth/callback", async (req, res) => {
   const { code, state } = req.query;
   const envManager = new EnvironmentVariablesManager();
 
+  let info = { code: code, client_id: envManager.get("CLIENT_ID"), client_secret: envManager.get("CLIENT_SECRET")}
   // Get access token
-  const monday = mondaySdk();
-  monday.setApiVersion("2023-10");
-  const token = await monday.oauthToken(code, envManager.get("CLIENT_ID"), envManager.get("CLIENT_SECRET"));
-  //Store the token in a secure way
-  const secureStorage = new SecureStorage();
-  await secureStorage.set("API_TOKEN", token.access_token);
+  const postRes = await fetch('https://auth.monday.com/oauth2/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(info)
+  })
+  console.log(postRes);
 
+  let result = await postRes.json();
+  const secureStorage = new SecureStorage();
+  await secureStorage.set("API_TOKEN", result.access_token);
   // Redirect back to monday
-  return res.send("You may return to the main page now and reload it.");
+  res.send("You may return to the main page now and reload it.");
 });
 
 // Serve HTML
