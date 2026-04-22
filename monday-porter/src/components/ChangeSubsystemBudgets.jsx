@@ -25,6 +25,17 @@ function ChangeSubsystemBudgets({subsystemBudgetsInput, setSubsystemBudgets}) {
         if (subsystemTake == "") {
             message += "Must enter in a subsystem to take money from\n";
         }
+
+        //authenticate the user
+        const passwordInput = formData.get("password");
+        const result = await fetch('/api/authenticate?password=' + passwordInput);
+        const authenticated = await result.json();
+        console.log(authenticated);
+        if (!authenticated) {
+            alert("Incorrect password");
+            return;
+        }
+
         let foundGive = false;
         let foundTake = false;
         let subsystemTakeIdx = -1;
@@ -225,6 +236,9 @@ function ChangeSubsystemBudgets({subsystemBudgetsInput, setSubsystemBudgets}) {
                         </div>
                         <div class="inputArea">
                             <label for="description">Explanation: *</label> <input type="text" id="explanation" name="explanation"></input>
+                        </div>
+                        <div class="inputArea">
+                            <label for="password">Password: *</label> <input type="password" id="password" name="password"/>
                         </div>
                     </form>
                 </Dialog.Body>

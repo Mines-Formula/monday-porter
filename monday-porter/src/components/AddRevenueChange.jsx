@@ -25,6 +25,16 @@ function AddRevenueChange({indexes, setIndexes}) {
             return;
         }
 
+        //authenticate the user
+        const passwordInput = formData.get("password");
+        const result = await fetch('/api/authenticate?password=' + passwordInput);
+        const authenticated = await result.json();
+        console.log(authenticated);
+        if (!authenticated) {
+            alert("Incorrect password");
+            return;
+        }
+
         //get the date and update revenue changes
         const d = new Date();
         const dateInput = (d.getMonth() + 1) +"/" +(d.getDate()) + "/" + (d.getFullYear());
@@ -144,6 +154,9 @@ function AddRevenueChange({indexes, setIndexes}) {
                         </div>
                         <div class="inputArea">
                             <label for="description">Description: *</label> <input type="text" id="description" name="description"></input>
+                        </div>
+                        <div class="inputArea">
+                            <label for="password">Password: *</label> <input type="password" id="password" name="password"/>
                         </div>
                     </form>
                 </Dialog.Body>

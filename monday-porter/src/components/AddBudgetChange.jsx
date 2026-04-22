@@ -31,6 +31,17 @@ function AddBudgetChange({budgetChange, setBudgetChange}) {
             alert(message);
             return;
         }
+
+        //authenticate the user
+        const passwordInput = formData.get("password");
+        const result = await fetch('/api/authenticate?password=' + passwordInput);
+        const authenticated = await result.json();
+        console.log(authenticated);
+        if (!authenticated) {
+            alert("Incorrect password");
+            return;
+        }
+
         const bc = {
             date: dateInput,
             category: categoryInput,
@@ -114,6 +125,9 @@ function AddBudgetChange({budgetChange, setBudgetChange}) {
                         <div class="inputArea">
                             <label for="explanation">Explanation: *</label> <input type="text" id="explanation" name="explanation"></input>
                         </div>
+                        <div class="inputArea">
+                            <label for="password">Password: *</label> <input type="password" id="password" name="password"/>
+                        </div>
                     </form>
                 </Dialog.Body>
                 <Dialog.Footer>

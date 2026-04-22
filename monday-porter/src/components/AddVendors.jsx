@@ -27,6 +27,17 @@ function AddVendors({vendors, setVendors}) {
             alert(message);
             return;
         }
+
+        //authenticate the user
+        const passwordInput = formData.get("password");
+        const result = await fetch('/api/authenticate?password=' + passwordInput);
+        const authenticated = await result.json();
+        console.log(authenticated);
+        if (!authenticated) {
+            alert("Incorrect password");
+            return;
+        }
+
         let spendingInput = formData.get("spending");
         let notesInput = formData.get("notes");
         const vendor = {
@@ -35,7 +46,7 @@ function AddVendors({vendors, setVendors}) {
             spending: spendingInput,
             notes: notesInput,
             requiresTaxException: taxExceptionInput,
-            chargesCOSalesTax: salesTaxInput
+            chargeCOSalesTax: salesTaxInput
         }
         let newVendors = [...vendors, vendor];
 
@@ -104,6 +115,9 @@ function AddVendors({vendors, setVendors}) {
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
                             </select>
+                        </div>
+                        <div class="inputArea">
+                            <label for="password">Password: *</label> <input type="password" id="password" name="password"/>
                         </div>
                     </form>
                 </Dialog.Body>

@@ -339,6 +339,22 @@ router.get("/oauth/callback", async (req, res) => {
   res.send("You may return to the main page now and reload it.");
 });
 
+app.get('/api/authenticate', async (req, res) => {
+  try {
+    const input = req.query.password;
+    const secretsManager = new SecretsManager();
+    const password = secretsManager.get("password");
+    if (input == password) {
+      res.send(true);
+    } else {
+      res.send(false);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+});
+
 // Serve HTML
 app.use('*all', async (req, res) => {
   try {
