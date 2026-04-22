@@ -15,16 +15,16 @@ function Vendors() {
     }
 
     useEffect(() => {
-        /*async function setData() {
-            const postRes = await fetch('/api/vendors', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(vendorList)
-            }).then(res => {
-                console.log(res);
-            });
-        }
-        setData();*/
+        // async function setData() {
+        //     const postRes = await fetch('/api/vendors', {
+        //         method: 'POST',
+        //         headers: { 'Content-Type': 'application/json' },
+        //         body: JSON.stringify(vendorList)
+        //     }).then(res => {
+        //         console.log(res);
+        //     });
+        // }
+        // setData();
         async function getData() {
             const res = await fetch('/api/vendors');
             const data = await res.json();
@@ -57,6 +57,8 @@ function Vendors() {
                         <Table.ColumnHeader>Spending</Table.ColumnHeader>
                         <Table.ColumnHeader>Preference</Table.ColumnHeader>
                         <Table.ColumnHeader>Notes</Table.ColumnHeader>
+                        <Table.ColumnHeader>Requires Tax Exception</Table.ColumnHeader>
+                        <Table.ColumnHeader>Charges CO Sales Tax</Table.ColumnHeader>
                     </Table.Row>
                     </Table.Header>
 
@@ -67,6 +69,8 @@ function Vendors() {
                             <Table.Cell>${vendor.spending}</Table.Cell>
                             <Table.Cell style={{color: colorCode(vendor.preference)}}>{vendor.preference}</Table.Cell>
                             <Table.Cell>{vendor.notes}</Table.Cell>
+                            <Table.Cell>{vendor.requiresTaxException}</Table.Cell>
+                            <Table.Cell>{vendor.chargeCOSalesTax}</Table.Cell>
                         </Table.Row>
                     ))}
                     </Table.Body>
