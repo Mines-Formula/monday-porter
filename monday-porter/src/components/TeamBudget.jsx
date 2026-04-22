@@ -41,8 +41,8 @@ function TeamBudget() {
     } else {
         return (
             <>
-            <h1 class="title fixed">Team Budget</h1>
-            <main>
+            <h1 class="title">Team Budget</h1>
+            <div>
                 <Flex gap="10">
                 {teamBudget.map((section) => (
                     <Box borderWidth={2} padding={2}>
@@ -58,7 +58,7 @@ function TeamBudget() {
                     </Box>
                 ))}
                 </Flex>
-            </main>
+            </div>
             </>
         );
     }

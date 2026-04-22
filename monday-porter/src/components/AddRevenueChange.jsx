@@ -34,8 +34,8 @@ function AddRevenueChange({indexes, setIndexes}) {
             index: indexInput,
             description: descriptionInput
         }
-        const res = await fetch('/api/revenueChanges');
-        const revenueChanges = await res.json();
+        let res = await fetch('/api/revenueChanges');
+        let revenueChanges = await res.json();
         let newRevenueChanges = [...revenueChanges, revenueChange];
         const revenuePostRes = await fetch('/api/revenueChanges', {
             method: 'POST',
@@ -59,6 +59,46 @@ function AddRevenueChange({indexes, setIndexes}) {
                 newIndexes[i].balance = newBalance;
             }
         }
+        //update unallocated funds
+        res = await fetch('/api/subsystemBudgets');
+        let subsystemBudgets = await res.json();
+        for (let i = subsystemBudgets.length-1; i >= 0; i++) {
+            if (subsystemBudgets[i].subsystem == "Unallocated Funds") {
+                let totalBudget = parseFloat(subsystemBudgets[i].budget.replace(/,/g, ''));
+                totalBudget += parseFloat(amountInput.replace(/,/g, ''));
+                subsystemBudgets[i].budget = totalBudget.toLocaleString('en-US');
+                subsystemBudgets[i].remaining = totalBudget.toLocaleString('en-US');
+                break;
+            }
+        }
+        res = await fetch('/api/teamBudget');
+        let teamBudget = await res.json();
+        for (let i = 0; i < teamBudget.length; i++) {
+            if (teamBudget[i].section_name == "Funds") {
+                for (let j = 0; j < teamBudget[i].items.length; j++) {
+                    if (teamBudget[i].items[j].name == "Unallocated Funds") {
+                        let balance = teamBudget[i].items[j].value; 
+                        teamBudget[i].items[j].value = balance + parseFloat(amountInput.replace(/,/g, ''));
+                    }
+                }
+            }
+        }
+
+        //set everything
+        const subsystemBudgetsPostRes = await fetch('/api/subsystemBudgets', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(subsystemBudgets)
+        }).then(res => {
+            console.log(res);
+        });
+        const teamBudgetPostRes = await fetch('/api/teamBudget', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(teamBudget)
+        }).then(res => {
+            console.log(res);
+        });
         const indexPostRes = await fetch('/api/indexBalances', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -71,7 +111,7 @@ function AddRevenueChange({indexes, setIndexes}) {
         console.log(data);
         setIndexes(data);
         
-        alert("Successfuly changed");
+        alert("Successfuly added. Reload the page to see updates");
     }
 
     return (

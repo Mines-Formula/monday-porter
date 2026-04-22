@@ -79,7 +79,7 @@ function AddBudgetChange({budgetChange, setBudgetChange}) {
             console.log(data);
         }
 
-        alert("Successfuly added");
+        alert("Successfuly added. Reload the page to see updates");
     }
 
     return (

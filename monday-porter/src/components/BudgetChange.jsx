@@ -34,7 +34,7 @@ function BudgetChange() {
     if (loading) {
         return (
             <>
-            <h1 class="title">Budget Change</h1>
+            <h1 class="title">Budget Changes</h1>
             <div class="table">
                 <p>Loading budget change...</p>
             </div>
@@ -43,8 +43,8 @@ function BudgetChange() {
     }
     return (
         <>
-        <h1 class="title fixed">Budget Change</h1>
-        <main>
+        <h1 class="title">Budget Changes</h1>
+        <div class="table">
             <Stack gap="4">
                 <Table.Root size="sm" striped>
                     <Table.Header>
@@ -69,8 +69,7 @@ function BudgetChange() {
                     </Table.Body>
                 </Table.Root>
             </Stack>
-        </main>
-        <AddBudgetChange budgetChange={budgetChange} setBudgetChange={setBudgetChange}></AddBudgetChange>
+        </div>
         </>
     );
 }

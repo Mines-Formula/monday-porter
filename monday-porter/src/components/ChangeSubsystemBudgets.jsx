@@ -137,12 +137,62 @@ function ChangeSubsystemBudgets({subsystemBudgetsInput, setSubsystemBudgets}) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(teamBudget)
             })
+        } 
+        if (subsystemTake == "Unallocated Funds") {
+            res = await fetch('/api/teamBudget');
+            let teamBudget = await res.json();
+            for (let i = 0; i < teamBudget.length; i++) {
+                if (subsystemGive == "Reserves") {
+                    if (teamBudget[i].section_name == "Budget") {
+                        for (let j = 0; j < teamBudget[i].items.length; j++) {
+                            if (teamBudget[i].items[j].name == "Reserves Budget") {
+                                teamBudget[i].items[j].value += amount;
+                            }
+                        }
+                    } else if (teamBudget[i].section_name == "Spending") {
+                        for (let j = 0; j < teamBudget[i].items.length; j++) {
+                            if (teamBudget[i].items[j].name == "Reserves Unspent") {
+                                teamBudget[i].items[j].value += amount;
+                            }
+                        }
+                    }
+                }
+                if (teamBudget[i].section_name == "Funds") {
+                    for (let j = 0; j < teamBudget[i].items.length; j++) {
+                        if (teamBudget[i].items[j].name == "Unallocated Funds") {
+                            teamBudget[i].items[j].value -= amount;
+                        }
+                    }
+                }
+            }
+            postRes = await fetch('/api/teamBudget', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(teamBudget)
+            })
+        } else if (subsystemGive == "Unallocated Funds") {
+            res = await fetch('/api/teamBudget');
+            let teamBudget = await res.json();
+            for (let i = 0; i < teamBudget.length; i++) {
+                if (teamBudget[i].section_name == "Funds") {
+                    for (let j = 0; j < teamBudget[i].items.length; j++) {
+                        if (teamBudget[i].items[j].name == "Unallocated Funds") {
+                            teamBudget[i].items[j].value += amount;
+                        }
+                    }
+                }
+            }
+            postRes = await fetch('/api/teamBudget', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(teamBudget)
+            })
         }
 
         res = await fetch('/api/subsystemBudgets');
         let data = await res.json();
         setSubsystemBudgets(data);
-        alert("Successfuly changed");
+        alert("Successfuly changed. Reload the page to see results");
     }
 
     return (
