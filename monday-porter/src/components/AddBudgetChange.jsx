@@ -41,7 +41,7 @@ function AddBudgetChange({budgetChange, setBudgetChange}) {
         }
         let newBudgetChange = [...budgetChange, bc];
 
-        const postRes = await fetch('/api/budgetChange', {
+        let postRes = await fetch('/api/budgetChange', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newBudgetChange)
@@ -62,9 +62,9 @@ function AddBudgetChange({budgetChange, setBudgetChange}) {
                 console.log(tBData[i]);
                 for (let j=0; j<tBData[i].items.length; j++) {
                     console.log(tBData[i].items.name);
-                    if (tBData[i].items[j].name == "Reserves Budget") {
+                    if (tBData[i].items[j].name == "Reserves Budget" || tBData[i].items[j].name == "Total Budget" || tBData[i].items[j].name == "Reserves Unspent" || tBData[i].items[j].name == "Total Unspent") {
                         console.log("Found reserve budget");
-                        tBData[i].items[j].value = parseInt(bc.afterAllocation);
+                        tBData[i].items[j].value += parseInt(bc.afterAllocation) - parseInt(bc.beforeAllocation);
                     }
                 }
             }
@@ -86,7 +86,7 @@ function AddBudgetChange({budgetChange, setBudgetChange}) {
     return (
         <Dialog.Root class="dialog">
         <Dialog.Trigger asChild>
-            <Button variant="outline" size="sm">
+            <Button backgroundColor="white" colorPalette="gray" variant="outline" size="sm">
             Add Budget Change
             </Button>
         </Dialog.Trigger>

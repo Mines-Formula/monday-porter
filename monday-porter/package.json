@@ -8,21 +8,25 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.jsx --outDir dist/server",
-    "preview": "cross-env NODE_ENV=production node server"
+    "preview": "cross-env NODE_ENV=production node server",
+    "postinstall": "npx @chakra-ui/cli snippet add"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.33.0",
-    "monday-sdk-js": "^0.5.7",
+    "@emotion/react": "^11.14.0",
     "@mondaycom/apps-sdk": "^3.3.0",
+    "@mondaydotcomorg/api": "^14.0.0",
     "compression": "^1.8.1",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "monday-sdk-js": "^0.5.7",
+    "next-themes": "^0.4.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-icons": "^5.6.0",
     "react-router-dom": "^7.13.0",
-    "sirv": "^3.0.2",
-    "jsonwebtoken": "^9.0.2",
-    "@mondaydotcomorg/api": "^14.0.0"
+    "sirv": "^3.0.2"
   },
   "devDependencies": {
     "@types/react": "^19.2.10",
