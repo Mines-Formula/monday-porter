@@ -1,3 +1,5 @@
+import { Button } from "@chakra-ui/react"
+
 function UpdateFromOrderingQueue() {
     async function update() {
         let res = await fetch('/api/orderingQueue');
@@ -255,7 +257,7 @@ function UpdateFromOrderingQueue() {
     }
 
     return (
-        <button onClick={update}>Update pages from ordering queue</button>
+        <Button onClick={update} backgroundColor="white" colorPalette="gray" variant="outline" size="sm">Update pages from ordering queue</Button>
     )
 }
 

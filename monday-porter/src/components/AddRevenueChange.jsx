@@ -127,7 +127,7 @@ function AddRevenueChange({indexes, setIndexes}) {
     return (
         <Dialog.Root class="dialog">
         <Dialog.Trigger asChild>
-            <Button variant="outline" size="sm">
+            <Button backgroundColor="white" colorPalette="gray" variant="outline" size="sm">
             Change Revenue
             </Button>
         </Dialog.Trigger>
@@ -162,12 +162,12 @@ function AddRevenueChange({indexes, setIndexes}) {
                 </Dialog.Body>
                 <Dialog.Footer>
                 <Dialog.ActionTrigger asChild>
-                    <Button variant="outline">Cancel</Button>
+                    <Button backgroundColor="white" colorPalette="gray" variant="outline" size="sm">Cancel</Button>
                 </Dialog.ActionTrigger>
-                <Button color="blue" type="submit" form="addRevenueChange">Submit</Button>
+                <Button color="blue" type="submit" form="addRevenueChange" backgroundColor="white" variant="outline" size="sm">Submit</Button>
                 </Dialog.Footer>
                 <Dialog.CloseTrigger asChild>
-                <CloseButton size="sm" />
+                <CloseButton size="sm" backgroundColor="white" colorPalette="gray" variant="outline" />
                 </Dialog.CloseTrigger>
             </Dialog.Content>
             </Dialog.Positioner>

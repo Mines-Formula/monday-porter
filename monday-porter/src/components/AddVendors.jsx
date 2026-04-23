@@ -68,7 +68,7 @@ function AddVendors({vendors, setVendors}) {
     return (
         <Dialog.Root class="dialog">
         <Dialog.Trigger asChild>
-            <Button variant="outline" size="sm">
+            <Button backgroundColor="white" colorPalette="gray" variant="outline" size="sm">
             Add Vendor
             </Button>
         </Dialog.Trigger>
@@ -123,12 +123,12 @@ function AddVendors({vendors, setVendors}) {
                 </Dialog.Body>
                 <Dialog.Footer>
                 <Dialog.ActionTrigger asChild>
-                    <Button variant="outline">Cancel</Button>
+                    <Button variant="outline" backgroundColor="white" colorPalette="gray" size="sm">Cancel</Button>
                 </Dialog.ActionTrigger>
-                <Button color="blue" type="submit" form="addVendor">Submit</Button>
+                <Button color="blue" type="submit" form="addVendor" backgroundColor="white" variant="outline" size="sm">Submit</Button>
                 </Dialog.Footer>
                 <Dialog.CloseTrigger asChild>
-                <CloseButton size="sm" />
+                <CloseButton size="sm" backgroundColor="white" colorPalette="gray" variant="outline" />
                 </Dialog.CloseTrigger>
             </Dialog.Content>
             </Dialog.Positioner>

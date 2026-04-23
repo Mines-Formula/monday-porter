@@ -216,6 +216,7 @@ app.get('/api/orderingQueue', async (req, res) => {
     //const apiToken = envManager.get("VITE_API_TOKEN");
     const client = new ApiClient({ token: apiToken });
     await secureStorage.set("lastID", "na");
+    const boardId = envManager.get("BOARD_ID");
 
     const lastID = await secureStorage.get("lastID");
     console.log("lastID = " + lastID);
@@ -224,7 +225,7 @@ app.get('/api/orderingQueue', async (req, res) => {
     let orders;//an array of every item in the ordering queue
     if (lastID == null || lastID == "na") {
       //then we need to get all of the information becasue it hasn't been updated from default values yet
-      let response = await client.request(`query { boards(ids: 9377407776) { name columns { title id } items_page( limit: 500 query_params: {order_by: [{column_id: "__creation_log__", direction: desc}]} ) { cursor items { id name column_values { text value __typename } } } } }`);
+      let response = await client.request('query { boards(ids: ' + boardId + ') { name columns { title id } items_page( limit: 500 query_params: {order_by: [{column_id: "__creation_log__", direction: desc}]} ) { cursor items { id name column_values { text value __typename } } } } }');
       columns = response.boards[0].columns;
       orders = response.boards[0].items_page.items;      
       //set lastID to be the first ID that we get from the response
@@ -246,7 +247,7 @@ app.get('/api/orderingQueue', async (req, res) => {
       let ordersJSON = JSON.stringify(orders);
       result = '{ "columns": ' + columnsJSON + ', "orders": ' + ordersJSON + ', "fromBudget": true}';
     } else {
-      let response = await client.request(`query { boards(ids: 9377407776) { name columns { title id } items_page( limit: 50 query_params: {order_by: [{column_id: "__creation_log__", direction: desc}]} ) { cursor items { id name column_values { text value __typename } } } } }`);
+      let response = await client.request('query { boards(ids: ' + boardId + ') { name columns { title id } items_page( limit: 50 query_params: {order_by: [{column_id: "__creation_log__", direction: desc}]} ) { cursor items { id name column_values { text value __typename } } } } }');
       columns = response.boards[0].columns;
       orders = response.boards[0].items_page.items;      
       let idIdx;
@@ -352,6 +353,54 @@ app.get('/api/authenticate', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ err });
+  }
+});
+
+app.post('/api/addVendorToForm', async (req, res) => {
+  try {
+    const secureStorage = new SecureStorage();
+    const envManager = new EnvironmentVariablesManager();
+    //const apiToken = await secureStorage.get("API_TOKEN");
+    const apiToken = envManager.get("VITE_API_TOKEN");
+    const client = new ApiClient({ token: apiToken });
+    const formId = envManager.get("FORM_ID");
+    const form = await client.request('query { form(formToken: "' + formId + '") { questions { id title } }}');
+    console.log(form.form.questions);
+    let questionId;
+    for (let i = 0; i < form.form.questions.length; i++) {
+      if (form.form.questions[i].title == "Vendor") {
+        questionId = form.form.questions[i].id;
+        console.log("Found vendor area");
+        await client.request('mutation { delete_question( formToken: "' + formId + '" questionId: "' + questionId + '")}');
+        break;
+      }
+    }
+
+    const value = await secureStorage.get('vendors');
+    const vendors = JSON.parse(value);
+    console.log(typeof(vendors));
+    console.log(vendors.length);
+    let vendorList = [];
+    for (let i = 0; i < vendors.length; i++) {
+      let vendorName = vendors[i].name;
+      vendorList.push(vendorName);
+    }
+    console.log(vendorList);
+    const vendorString = vendorList
+      .map(label => `{label: "${label}"}`)
+      .join(", ");
+    const query = `
+    mutation
+      { create_form_question( formToken: "${formId}" question: 
+       { title: "Vendor" type: SingleSelect required: true options: [${vendorString}] } )
+        { id }}
+    `;
+    await client.request(query);
+
+    res.status(200).json({message: 'Successfuly changed '}); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update form' });
   }
 });
 
