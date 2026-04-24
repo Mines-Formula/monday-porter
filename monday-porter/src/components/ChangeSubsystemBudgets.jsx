@@ -69,6 +69,11 @@ function ChangeSubsystemBudgets({subsystemBudgetsInput, setSubsystemBudgets}) {
         }
 
         let amount = parseFloat(amountInput);
+        //check if there is enough money to take
+        if (amount > parseFloat(subsystemBudgets[subsystemTakeIdx].remaining.replace(/,/g, ''))) {
+            alert("You cannot take more money out of a subsystem than there is money remaining");
+            return;
+        }  
         //take from the respective budget and update its percent
         let oldBudgetTake = parseFloat(subsystemBudgets[subsystemTakeIdx].budget.replace(/,/g, ''));
         let newBudgetTake = oldBudgetTake - amount;
@@ -119,6 +124,7 @@ function ChangeSubsystemBudgets({subsystemBudgetsInput, setSubsystemBudgets}) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(subsystemBudgets)
         })
+
         //if it removes from reserves, need to add amount to total budget
         if (subsystemTake == "Reserves") {
             console.log("Taking from reserves");
