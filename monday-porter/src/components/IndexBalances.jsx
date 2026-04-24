@@ -2,22 +2,23 @@ import { useState, useEffect } from 'react'
 import { Table } from '@chakra-ui/react'
 import indexList from 'data/IndexBalances.json'
 import AddRevenueChange from 'components/AddRevenueChange.jsx'
+import UpdateIndexBalances from 'components/UpdateIndexBalances.jsx'
 
 function IndexBalances() {
     const [indexes, setIndexes] = useState(indexList);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        /*async function setData() {
-            const postRes = await fetch('/api/indexBalances', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(indexList)
-            }).then(res => {
-                console.log(res);
-            });
-        }
-        setData();*/
+        // async function setData() {
+        //     const postRes = await fetch('/api/indexBalances', {
+        //         method: 'POST',
+        //         headers: { 'Content-Type': 'application/json' },
+        //         body: JSON.stringify(indexList)
+        //     }).then(res => {
+        //         console.log(res);
+        //     });
+        // }
+        // setData();
         async function getData() {
             const res = await fetch('/api/indexBalances');
             const data = await res.json();
@@ -34,16 +35,16 @@ function IndexBalances() {
             let balance = index.balance;
             total += balance;
         }
-        return total;
+        return Math.round(total * 100) / 100;
     }
 
     function totalRevenue() {
         let total = 0;
         for (const index of indexes) {
-            let revenue = index.balance;
+            let revenue = index.revenue;
             total += revenue;
         }
-        return total;
+        return Math.round(total * 100) / 100;
     }
 
     if (loading) {
@@ -90,6 +91,7 @@ function IndexBalances() {
             </Table.ScrollArea>
             </div>
             <AddRevenueChange indexes={indexes} setIndexes={setIndexes}></AddRevenueChange>
+            <UpdateIndexBalances indexes={indexes} setIndexes={setIndexes}/>
             </>
         )
     }

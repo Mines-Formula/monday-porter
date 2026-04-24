@@ -8,16 +8,16 @@ function TeamBudget() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => { 
-        /*async function setData() {
-            const postRes = await fetch('/api/teamBudget', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(teamBudgetList)
-            }).then(res => {
-                console.log(res);
-            });
-        }
-        setData();*/
+        // async function setData() {
+        //     const postRes = await fetch('/api/teamBudget', {
+        //         method: 'POST',
+        //         headers: { 'Content-Type': 'application/json' },
+        //         body: JSON.stringify(teamBudgetList)
+        //     }).then(res => {
+        //         console.log(res);
+        //     });
+        // }
+        // setData();
         async function getData() {
             const res = await fetch('/api/teamBudget');
             const data = await res.json();

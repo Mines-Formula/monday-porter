@@ -128,7 +128,7 @@ function AddRevenueChange({indexes, setIndexes}) {
         <Dialog.Root class="dialog">
         <Dialog.Trigger asChild>
             <Button backgroundColor="white" colorPalette="gray" variant="outline" size="sm">
-            Change Revenue
+            Add Revenue
             </Button>
         </Dialog.Trigger>
         <Portal>
@@ -136,7 +136,7 @@ function AddRevenueChange({indexes, setIndexes}) {
             <Dialog.Positioner>
             <Dialog.Content>
                 <Dialog.Header>
-                <Dialog.Title>Change Revenue</Dialog.Title>
+                <Dialog.Title>Add Revenue</Dialog.Title>
                 </Dialog.Header>
                 <Dialog.Body>
                     <p>Required fields marked with *</p>

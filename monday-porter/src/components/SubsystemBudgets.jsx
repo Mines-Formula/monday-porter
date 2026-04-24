@@ -8,16 +8,16 @@ function SubsystemBudgets() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        /*async function setData() {
-            const postRes = await fetch('/api/subsystemBudgets', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(subsystemList)
-            }).then(res => {
-                console.log(res);
-            });
-        }
-        setData();*/
+        // async function setData() {
+        //     const postRes = await fetch('/api/subsystemBudgets', {
+        //         method: 'POST',
+        //         headers: { 'Content-Type': 'application/json' },
+        //         body: JSON.stringify(subsystemList)
+        //     }).then(res => {
+        //         console.log(res);
+        //     });
+        // }
+        // setData();
         async function getData() {
             const res = await fetch('/api/subsystemBudgets');
             const data = await res.json();
