@@ -27,7 +27,9 @@ function AddRevenueChange({indexes, setIndexes}) {
 
         //authenticate the user
         const passwordInput = formData.get("password");
-        const result = await fetch('/api/authenticate?password=' + passwordInput);
+        const params = new URLSearchParams();
+        params.append("password", passwordInput);
+        const result = await fetch(`/api/authenticate?${params}`);
         const authenticated = await result.json();
         console.log(authenticated);
         if (!authenticated) {
