@@ -1,7 +1,10 @@
-import { Button } from "@chakra-ui/react"
+import { Button, Spinner } from "@chakra-ui/react"
+import { useState, useEffect } from 'react'
 
 function UpdateFromOrderingQueue() {
+    const [updating, setUpdating] = useState(false)
     async function update() {
+        setUpdating(true)
         let res = await fetch('/api/orderingQueue');
         const data = await res.json();
         console.log(res.ok);
@@ -9,13 +12,14 @@ function UpdateFromOrderingQueue() {
             let error = data.err.response.errors[0].message
             if (error == "Not authenticated") {
                 alert("Must authorize the app first");
+                setUpdating(false)
                 return;
             }
             alert("There was an error recieving the data");
+            setUpdating(false)
             return;
         }
 
-        console.log(data);
 
         //need to get column idx for subsystem, lead, quantity, price, vendors
         let subsystemIdx;
@@ -58,7 +62,7 @@ function UpdateFromOrderingQueue() {
         console.log("Getting index balances")
         res = await fetch('/api/indexBalances');
         let indexBalances = await res.json();
-        console.log(indexBalances);//somehow this has been changed by the time its printed
+        console.log(indexBalances);
         //vendors
         console.log("Geting vendors")
         res = await fetch('/api/vendors');
@@ -117,14 +121,11 @@ function UpdateFromOrderingQueue() {
                 console.log("Changing vendors")
                 vendors[i].spending = "0.00";
             }
-            console.log(vendors);
-        }
-        console.log(teamBudget);
-        console.log(indexBalances);
-        console.log(subsystemBudgets);
+        };
         
         await change(subsystemIdx, leadIdx, quantityIdx, vendorIdx, priceIdx, indexIdx, orders, subsystemBudgets, indexBalances, teamBudget, vendors, spenders);
 
+        setUpdating(false)
         alert("Update successful");
     }
 
@@ -256,9 +257,19 @@ function UpdateFromOrderingQueue() {
         });
     }
 
-    return (
-        <Button onClick={update} backgroundColor="white" colorPalette="gray" variant="outline" size="sm">Update pages from ordering queue</Button>
-    )
+    if (updating) {
+        return(
+            <>
+                <Button onClick={update} backgroundColor="white" colorPalette="gray" variant="outline" size="sm" disabled>Update pages from ordering queue</Button>
+                <Spinner/>
+            </>
+        )
+    }
+    else {
+        return (
+            <Button onClick={update} backgroundColor="white" colorPalette="gray" variant="outline" size="sm">Update pages from ordering queue</Button>
+        )
+    }
 }
 
 export default UpdateFromOrderingQueue;
