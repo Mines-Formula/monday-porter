@@ -40,17 +40,42 @@ function AddVendors({vendors, setVendors}) {
             return;
         }
 
+        //check if vendor is already in the vendor list
+        let existingIdx = -1
+        for (let i = 0; i < vendors.length; i++) {
+            if (vendors[i].name == nameInput) {
+                let consent = confirm("Vendor " + nameInput + " already exists. Do you want to overwrite the existing vendor?");
+                if (consent) {
+                    existingIdx = i;
+                    break;
+                } else {
+                    alert("Leaving the existing vendor " + nameInput + " unmodified");
+                    return;
+                }
+            }
+        }
+
         let spendingInput = formData.get("spending");
         let notesInput = formData.get("notes");
-        const vendor = {
-            name: nameInput,
-            preference: preferenceInput,
-            spending: spendingInput,
-            notes: notesInput,
-            requiresTaxException: taxExceptionInput,
-            chargeCOSalesTax: salesTaxInput
+        let newVendors = null
+        if (existingIdx == -1) {
+            const vendor = {
+                name: nameInput,
+                preference: preferenceInput,
+                spending: spendingInput,
+                notes: notesInput,
+                requiresTaxException: taxExceptionInput,
+                chargeCOSalesTax: salesTaxInput
+            }
+            newVendors = [...vendors, vendor];
+        } else {
+            newVendors = vendors;
+            newVendors[existingIdx].preference = preferenceInput;
+            newVendors[existingIdx].spending = spendingInput;
+            newVendors[existingIdx].notes = notesInput
+            newVendors[existingIdx].requiresTaxException = taxExceptionInput;
+            newVendors[existingIdx].chargeCOSalesTax = salesTaxInput;
         }
-        let newVendors = [...vendors, vendor];
 
         const postRes = await fetch('/api/vendors', {
             method: 'POST',
