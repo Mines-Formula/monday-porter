@@ -231,7 +231,11 @@ app.get('/api/orderingQueue', async (req, res) => {
       //set lastID to be the first ID that we get from the response
       for (let i = 0; i < columns.length; i++) {
         if (columns[i].title == "ID") {
-          await secureStorage.set("lastID", orders[0].column_values[i-1]);
+          try {
+            await secureStorage.set("lastID", orders[0].column_values[i-1]);
+          } catch (error) {
+            console.log("Had error with reading the orders: " + error)
+          }
         }
       }
       
