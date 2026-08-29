@@ -218,76 +218,25 @@ app.get('/api/orderingQueue', async (req, res) => {
     await secureStorage.set("lastID", "na");
     const boardId = envManager.get("BOARD_ID");
 
-    const lastID = await secureStorage.get("lastID");
-    console.log("lastID = " + lastID);
     let result;
     let columns;//an array for the column names
     let orders;//an array of every item in the ordering queue
-    if (lastID == null || lastID == "na") {
-      //then we need to get all of the information becasue it hasn't been updated from default values yet
-      let response = await client.request('query { boards(ids: ' + boardId + ') { name columns { title id } items_page( limit: 500 query_params: {order_by: [{column_id: "__creation_log__", direction: desc}]} ) { cursor items { id name column_values { text value __typename } } } } }');
-      columns = response.boards[0].columns;
-      orders = response.boards[0].items_page.items;      
-      //set lastID to be the first ID that we get from the response
-      for (let i = 0; i < columns.length; i++) {
-        if (columns[i].title == "ID") {
-          try {
-            await secureStorage.set("lastID", orders[0].column_values[i-1]);
-          } catch (error) {
-            console.log("Had error with reading the orders: " + error)
-          }
-        }
-      }
-      
-      let cursor = response.boards[0].items_page.cursor;
-      while (cursor != null) {
-        response = await client.request('query { next_items_page (cursor: "' + cursor + '" limit: 500) { cursor items { id name column_values { text value __typename } } } }')
-        let nextOrders = response.next_items_page.items;
-        orders.push(...nextOrders);
-        cursor = response.next_items_page.cursor;
-      }
-      //append columns to orders
-      let columnsJSON = JSON.stringify(columns);
-      let ordersJSON = JSON.stringify(orders);
-      result = '{ "columns": ' + columnsJSON + ', "orders": ' + ordersJSON + ', "fromBudget": true}';
-    } else {
-      let response = await client.request('query { boards(ids: ' + boardId + ') { name columns { title id } items_page( limit: 50 query_params: {order_by: [{column_id: "__creation_log__", direction: desc}]} ) { cursor items { id name column_values { text value __typename } } } } }');
-      columns = response.boards[0].columns;
-      orders = response.boards[0].items_page.items;      
-      let idIdx;
-      //set lastID to be the first ID that we get from the response
-      for (let i = 0; i < columns.length; i++) {
-        if (columns[i].title == "ID") {
-          idIdx = i-1;
-          await secureStorage.set("lastID", orders[0].column_values[i-1]);
-        }
-      }
-      let idxChecked = -1;
-      //check where the item is in the thing
-      for (let i = 0; i < orders.length; i++) {
-        if (orders[i].column_values[idIdx].text == lastID) {
-          idxChecked = i;
-          break;
-        }
-      }
-      let cursor = response.boards[0].items_page.cursor;
-      while (idxChecked == -1 && cursor != null ) {
-        response = await client.request('query { next_items_page (cursor: "' + cursor + '" limit: 500) { cursor items { id name column_values { text value __typename } } } }')
-        let nextOrders = response.next_items_page.items;
-        orders.push(...nextOrders);
-        cursor = response.next_items_page.cursor;
-        for (let i = 0; i < orders.length; i++) {
-          if (orders[i].column_values[idIdx].text == lastID) {
-            idxChecked = i;
-            break;
-          }
-        }
-      }
-      let newOrders = orders.splice(0, idxChecked);
-      let columnsJSON = JSON.stringify(columns);
-      let ordersJSON = JSON.stringify(newOrders);
-      result = '{ "columns": ' + columnsJSON + ', "orders": ' + ordersJSON + ', "fromBudget": false}';
+    //then we need to get all of the information becasue it hasn't been updated from default values yet
+    let response = await client.request('query { boards(ids: ' + boardId + ') { name columns { title id } items_page( limit: 500 query_params: {order_by: [{column_id: "__creation_log__", direction: desc}]} ) { cursor items { id name column_values { text value __typename } } } } }');
+    columns = response.boards[0].columns;
+    orders = response.boards[0].items_page.items;      
+    
+    let cursor = response.boards[0].items_page.cursor;
+    while (cursor != null) {
+      response = await client.request('query { next_items_page (cursor: "' + cursor + '" limit: 500) { cursor items { id name column_values { text value __typename } } } }')
+      let nextOrders = response.next_items_page.items;
+      orders.push(...nextOrders);
+      cursor = response.next_items_page.cursor;
     }
+    //append columns to orders
+    let columnsJSON = JSON.stringify(columns);
+    let ordersJSON = JSON.stringify(orders);
+    result = '{ "columns": ' + columnsJSON + ', "orders": ' + ordersJSON + ', "fromBudget": true}';
     res.setHeader("Content-Type", "application/json");
     res.send(result);
   } catch (err) {
