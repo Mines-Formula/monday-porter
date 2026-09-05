@@ -28,6 +28,7 @@ function UpdateFromOrderingQueue() {
         let vendorIdx;
         let priceIdx;
         let indexIdx;
+        let statusIdx;
         let columns = data.columns;
         let orders = data.orders;
         for (let i = 0; i < columns.length; i++) {
@@ -43,6 +44,8 @@ function UpdateFromOrderingQueue() {
                 priceIdx = i-1;
             } else if (columns[i].title == "Index") {
                 indexIdx = i-1;
+            } else if (columns[i].title == "Status") {
+                statusIdx = i-1;
             }
         }
         //subsystem budgets
@@ -123,17 +126,22 @@ function UpdateFromOrderingQueue() {
             }
         };
         
-        await change(subsystemIdx, leadIdx, quantityIdx, vendorIdx, priceIdx, indexIdx, orders, subsystemBudgets, indexBalances, teamBudget, vendors, spenders);
+        await change(subsystemIdx, leadIdx, quantityIdx, vendorIdx, priceIdx, indexIdx, orders, subsystemBudgets, indexBalances, teamBudget, vendors, spenders, statusIdx);
 
         setUpdating(false)
         alert("Update successful");
     }
 
     async function change(subsystemIdx, leadIdx, quantityIdx, vendorIdx, priceIdx, indexIdx, orders, subsystemBudgets, indexBalances,
-        teamBudget, vendors, spenders
+        teamBudget, vendors, spenders, statusIdx
     ) {
         console.log("Entered the function");
         for (let i = 0; i < orders.length; i++) {
+            let status = orders[i].column_values[statusIdx].text
+            if (status == null || status == undefined || !(status == "Purchased" || status == "Delivered" || status == "Recieved")) {
+                console.log("Not including item with status " + status)
+                continue;
+            }
             //get total cost
             let quantity = parseInt(orders[i].column_values[quantityIdx].text.replace(/,/g, ''));
             let cost = parseFloat(orders[i].column_values[priceIdx].text.replace(/,/g, '')) * quantity;
