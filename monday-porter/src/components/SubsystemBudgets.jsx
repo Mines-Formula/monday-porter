@@ -6,6 +6,7 @@ import ChangeSubsystemBudgets from 'components/ChangeSubsystemBudgets';
 function SubsystemBudgets() {
     const [subsystems, setSubsystems] = useState(subsystemList);
     const [loading, setLoading] = useState(true);
+    const [subsystemNames, setSubsystemNames] = useState(subsystemList)
 
     useEffect(() => {
         // async function setData() {
@@ -24,6 +25,9 @@ function SubsystemBudgets() {
             console.log("Setting subsystems to data");
             setSubsystems(data);
             setLoading(false);
+            const names = data.map(subsystem => subsystem.subsystem);
+            setSubsystemNames(names);
+            console.log("Subsystem names: " + subsystemNames);
         }
         getData();
     }, []);
@@ -76,7 +80,7 @@ function SubsystemBudgets() {
                 </Table.Root>
             </Table.ScrollArea>
             </div>
-            <ChangeSubsystemBudgets subsystemBudgetsInput={subsystems} setSubsystemBudgets={setSubsystems}/>
+            <ChangeSubsystemBudgets subsystemBudgetsInput={subsystems} setSubsystemBudgets={setSubsystems} subsystemNames={subsystemNames}/>
             </>
         )
     }
