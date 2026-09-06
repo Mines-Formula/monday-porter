@@ -117,10 +117,6 @@ function UpdateIndexBalances({indexes, setIndexes}) {
                             console.log("Removed money");
                             let difference = oldBudget - newTotalBudget;
                             let balance = teamBudget[i].items[j].value;
-                            if (difference > balance) {
-                                alert("Do not have enough unallocated funds to remove from to update funds to this. Redistribute the budget to fix this.");
-                                return;
-                            }
                             teamBudget[i].items[j].value = balance - difference;
                             unallocatedFunds = balance - difference;
                         }
