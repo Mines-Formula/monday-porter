@@ -1,7 +1,7 @@
 import { Button, CloseButton, Dialog, Portal } from "@chakra-ui/react"
 import 'src/App.css'
 
-function ChangeSubsystemBudgets({subsystemBudgetsInput, setSubsystemBudgets}) {
+function ChangeSubsystemBudgets({subsystemBudgetsInput, setSubsystemBudgets, subsystemNames}) {
     async function handleSubmit(evt) {
         //manage data input
         evt.preventDefault();
@@ -13,7 +13,7 @@ function ChangeSubsystemBudgets({subsystemBudgetsInput, setSubsystemBudgets}) {
             message += "Must enter in an amount\n";
         }
         let subsystemGive = formData.get("subsystem");
-        if (subsystemGive == "") {
+        if (subsystemGive == "select_preference") {
             message += "Must enter in a subsystem to give money to\n";
         }
         let explanationInput = formData.get("explanation");
@@ -22,7 +22,7 @@ function ChangeSubsystemBudgets({subsystemBudgetsInput, setSubsystemBudgets}) {
             message += "Must enter explanation for budget change\n";
         }
         let subsystemTake = formData.get("subsystemTake");
-        if (subsystemTake == "") {
+        if (subsystemTake == "select_preference") {
             message += "Must enter in a subsystem to take money from\n";
         }
 
@@ -236,11 +236,21 @@ function ChangeSubsystemBudgets({subsystemBudgetsInput, setSubsystemBudgets}) {
                         </div>
                         <div class="inputArea">
                             <label for="index">Subsystem to add to: *</label>
-                            <input type="text" id="subsystem" name="subsystem"></input>
+                            <select id="subsystem" name="subsystem">
+                                <option value="select_preference">Select Subsystem</option>
+                                {subsystemNames.map((subsystem) => (
+                                    <option value={subsystem}>{subsystem}</option>
+                                ))}
+                            </select>
                         </div>
                         <div class="inputArea">
                             <label for="subsystemTake">Subsystem to take from: *</label>
-                            <input type="text" id="subsystemTake" name="subsystemTake"></input>
+                            <select id="subsystemTake" name="subsystemTake">
+                                <option value="select_preference">Select Subsystem</option>
+                                {subsystemNames.map((subsystem) => (
+                                    <option value={subsystem}>{subsystem}</option>
+                                ))}
+                            </select>
                         </div>
                         <div class="inputArea">
                             <label for="description">Explanation: *</label> <input type="text" id="explanation" name="explanation"></input>
