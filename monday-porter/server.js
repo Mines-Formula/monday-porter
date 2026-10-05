@@ -215,7 +215,6 @@ app.get('/api/orderingQueue', async (req, res) => {
     const apiToken = await secureStorage.get("API_TOKEN");
     //const apiToken = envManager.get("VITE_API_TOKEN");
     const client = new ApiClient({ token: apiToken });
-    await secureStorage.set("lastID", "na");
     const boardId = envManager.get("BOARD_ID");
 
     let result;
@@ -268,6 +267,7 @@ router.get("/authorization", (req, res) => {
   return res.redirect('https://auth.monday.com/oauth2/authorize?' +
     querystring.stringify({
       client_id: envManager.get("CLIENT_ID"),
+      app_version_id: envManager.get("APP_VERSION_ID"),
       state: ""
     })
   );
@@ -284,7 +284,6 @@ router.get("/oauth/callback", async (req, res) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(info)
   })
-  console.log(postRes);
 
   let result = await postRes.json();
   const secureStorage = new SecureStorage();
