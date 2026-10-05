@@ -32,7 +32,7 @@ function UpdateFromOrderingQueue() {
         let columns = data.columns;
         let orders = data.orders;
         for (let i = 0; i < columns.length; i++) {
-            if (columns[i].title == "Subsystem") {
+            if (columns[i].title == "Subsystem 1") {
                 subsystemIdx = i-1;
             } else if (columns[i].title == "Lead") {
                 leadIdx = i-1;
