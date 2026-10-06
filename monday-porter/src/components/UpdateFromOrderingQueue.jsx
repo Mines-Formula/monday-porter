@@ -168,7 +168,8 @@ function UpdateFromOrderingQueue() {
             //deal with index balances
             let index = orders[i].column_values[indexIdx].text;
             for (let j = 0; j < indexBalances.length; j++) {
-                if (indexBalances[j].index == index) {
+                let indexName = indexBalances[j].name + ": " + indexBalances[j].index;
+                if (indexName == index) {
                     let totalRevenue = indexBalances[j].revenue;
                     let spent = indexBalances[j].spent;
                     spent += cost;
